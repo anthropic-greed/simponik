@@ -29,9 +29,9 @@ export default function AppShell({
   return (
     <div className="min-h-screen flex flex-col bg-slate-100">
       <header className="sticky top-0 z-20 text-white" style={{ backgroundColor: NAVY }}>
-        {/* Baris 1: logo + akun */}
-        <div className="flex items-center justify-between gap-4 px-6 py-4">
-          <img src="/logo-simponik-putih.png" alt="SIMPONIK" className="h-25 w-auto" />
+        {/* Baris 1: tinggi bar DIKUNCI ke h-28 (lebih tinggi dari sebelumnya) */}
+        <div className="flex items-center justify-between gap-4 px-6 h-28">
+          <img src="/logo-simponik-putih.png" alt="SIMPONIK" className="h-75 w-auto" />
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold leading-tight">{nama}</p>
