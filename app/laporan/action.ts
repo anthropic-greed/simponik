@@ -31,12 +31,20 @@ export async function simpanLaporan(formData: FormData) {
       realisasi: num,
     })
   }
+
+  console.log('[simpanLaporan] user:', user.id, 'role:', me.role)
+  console.log('[simpanLaporan] rows yang akan disimpan:', JSON.stringify(rows))
+
   if (rows.length === 0) return { error: 'Belum ada angka yang diisi.' }
 
-  // seksi_id & pencatat diisi otomatis oleh trigger; RLS menjaga hak akses
-  const { error } = await supabase
+  const { data: hasil, error } = await supabase
     .from('laporan_kinerja')
     .upsert(rows, { onConflict: 'indikator_id,periode' })
+    .select()
+
+  console.log('[simpanLaporan] hasil dari Supabase:', JSON.stringify(hasil))
+  console.log('[simpanLaporan] error dari Supabase:', JSON.stringify(error))
+
   if (error) return { error: error.message }
 
   revalidatePath('/laporan')
