@@ -32,18 +32,14 @@ export async function simpanLaporan(formData: FormData) {
     })
   }
 
-  console.log('[simpanLaporan] user:', user.id, 'role:', me.role)
-  console.log('[simpanLaporan] rows yang akan disimpan:', JSON.stringify(rows))
-
   if (rows.length === 0) return { error: 'Belum ada angka yang diisi.' }
 
-  const { data: hasil, error } = await supabase
+  const { error } = await supabase
     .from('laporan_kinerja')
     .upsert(rows, { onConflict: 'indikator_id,periode' })
-    .select()
 
-  console.log('[simpanLaporan] hasil dari Supabase:', JSON.stringify(hasil))
-  console.log('[simpanLaporan] error dari Supabase:', JSON.stringify(error))
+  console.log('[simpanLaporan] rows:', JSON.stringify(rows))
+  console.log('[simpanLaporan] error:', error ? JSON.stringify(error) : 'tidak ada, berhasil')
 
   if (error) return { error: error.message }
 
