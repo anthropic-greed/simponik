@@ -26,72 +26,66 @@
   --color-amber-950: #281a03;
 }
 
-body {
-  background-color: #f7f8fb;
-  color: #0f172a;
-}
+body { background-color: #f7f8fb; color: #0f172a; }
 
 button, [role="button"] {
   transition-property: color, background-color, border-color, box-shadow, transform, opacity;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
-button:active:not(:disabled), [role="button"]:active { transform: scale(0.97); }
+button:active:not(:disabled), [role="button"]:active { transform: scale(0.96); }
 button:disabled { cursor: not-allowed; }
 
 .card-modern {
   background: #ffffff;
-  border-radius: 1.5rem;
+  border-radius: 1.75rem;
   border: 1px solid rgba(15,23,42,0.06);
-  box-shadow: 0 1px 2px rgba(15,23,42,0.03), 0 10px 28px -14px rgba(15,23,42,0.10);
+  box-shadow: 0 1px 2px rgba(15,23,42,0.03), 0 12px 32px -16px rgba(15,23,42,0.12);
   transition: box-shadow 200ms ease, transform 200ms ease;
 }
-.card-modern:hover {
-  box-shadow: 0 4px 10px rgba(15,23,42,0.05), 0 20px 40px -16px rgba(30,58,107,0.14);
-}
+.card-modern:hover { transform: translateY(-3px); box-shadow: 0 6px 14px rgba(15,23,42,0.06), 0 24px 48px -18px rgba(30,58,107,0.18); }
 
 .card-accent-top { position: relative; overflow: hidden; }
 .card-accent-top::before {
-  content: "";
-  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 4px;
   background: var(--accent-color, #1e3a6b);
 }
 
-/* Tombol pil ala "shop now" */
-.btn-pill {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  border-radius: 9999px;
-  padding: 0.6rem 1.25rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  border: 1.5px solid #1e3a6b;
-  color: #1e3a6b;
-  background: transparent;
-}
-.btn-pill:hover { background: #1e3a6b; color: #ffffff; }
 .btn-pill-solid {
-  display: inline-flex; align-items: center; gap: 0.4rem;
-  border-radius: 9999px;
-  padding: 0.65rem 1.4rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  background: #1e3a6b;
-  color: #ffffff;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border-radius: 9999px; padding: 0.75rem 1.75rem;
+  font-size: 0.9rem; font-weight: 700;
+  background: #1e3a6b; color: #ffffff;
+  box-shadow: 0 8px 20px -6px rgba(30,58,107,0.5);
 }
-.btn-pill-solid:hover { background: #182f57; }
+.btn-pill-solid:hover { background: #142647; }
 
-/* Baris badge mendatar ala fitur produk */
-.badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.btn-pill-outline {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  border-radius: 9999px; padding: 0.7rem 1.6rem;
+  font-size: 0.9rem; font-weight: 700;
+  border: 2px solid #ffffff; color: #ffffff;
+}
+.btn-pill-outline:hover { background: rgba(255,255,255,0.12); }
+
+.badge-row { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 .badge-pill {
   display: inline-flex; align-items: center; gap: 0.4rem;
-  border-radius: 9999px;
-  padding: 0.4rem 0.9rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  background: #eef2f9;
-  color: #1e3a6b;
+  border-radius: 9999px; padding: 0.45rem 1rem;
+  font-size: 0.78rem; font-weight: 600;
+  background: #eef2f9; color: #1e3a6b;
   border: 1px solid rgba(30,58,107,0.10);
 }
+
+/* Strip fitur berwarna, meniru baris "Superior formula | Gluten-free | ..." */
+.feature-strip {
+  background: linear-gradient(90deg, #1e3a6b, #2b4a86, #1e3a6b);
+  color: #ffffff;
+}
+.feature-strip-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 600; white-space: nowrap; }
+
+/* Blob warna dekoratif untuk hero */
+.blob { position: absolute; border-radius: 9999px; filter: blur(60px); pointer-events: none; }
 
 ::-webkit-scrollbar { height: 8px; width: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
