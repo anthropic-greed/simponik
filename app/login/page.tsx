@@ -21,62 +21,54 @@ export default function LoginPage() {
   }
 
   const inputCls =
-    'w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+    'w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden flex items-center justify-center px-4 py-10">
-      {/* Lapisan 1: foto kantor */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: 'url(/kantor.jpg)' }}
-      />
-      {/* Lapisan 2: gradasi navy menutup foto, menyisakan ±20% foto terlihat */}
-      <div
-        className="absolute inset-0"
-        style={{ background: 'linear-gradient(135deg, rgba(30,58,107,0.86) 0%, rgba(19,35,77,0.9) 100%)' }}
-      />
-      {/* Hiasan lingkaran */}
-      <div className="absolute -top-32 -left-32 w-[28rem] h-[28rem] rounded-full bg-white/5" />
-      <div className="absolute -bottom-40 -right-24 w-[32rem] h-[32rem] rounded-full bg-white/5" />
+    <div className="min-h-screen bg-white flex flex-col">
+      <header className="flex items-center justify-center py-8">
+        <img src="/logo-simponik.png" alt="SIMPONIK" className="h-14 w-auto" />
+      </header>
 
-      {/* Kartu login */}
-      <div className="relative z-10 w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-2xl p-8 sm:p-10">
-          <img
-            src="/logo-simponik.png"
-            alt="SIMPONIK — Sistem Informasi Pelaporan Capaian Kinerja"
-            className="mx-auto mb-8 w-full max-w-[280px] h-auto"
-          />
-
-          <h1 className="text-2xl font-bold text-slate-900 text-center">Selamat datang</h1>
-          <p className="text-sm text-slate-500 mt-1 mb-6 text-center">
-            Masuk untuk melanjutkan ke sistem pelaporan kinerja.
+      <div className="flex-1 flex flex-col items-center justify-center px-6 pb-16">
+        <div className="text-center max-w-lg mb-10">
+          <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 tracking-tight leading-tight">
+            Kinerja terukur,<br />pelayanan terjaga
+          </h1>
+          <p className="text-slate-500 mt-4">
+            Sistem Informasi Pelaporan Capaian Kinerja — Kantor Imigrasi Kelas II TPI Tanjung Balai Karimun
           </p>
-
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Email</label>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
-                className={inputCls} placeholder="nama@imigrasi.go.id" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
-                className={inputCls} placeholder="••••••••" />
-            </div>
-            {error && <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">{error}</p>}
-            <button type="submit" disabled={loading}
-              className="w-full rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-medium py-2.5 text-sm transition">
-              {loading ? 'Memproses…' : 'Masuk'}
-            </button>
-          </form>
+          <div className="badge-row justify-center mt-6">
+            <span className="badge-pill">4 Seksi Aktif</span>
+            <span className="badge-pill">20 Indikator</span>
+            <span className="badge-pill">Pemantauan Real-time</span>
+          </div>
         </div>
 
-        {/* Footer dirapikan: dua baris terpisah & sejajar tengah */}
-        <div className="text-center mt-6 space-y-0.5">
-          <p className="text-xs text-white/70">Akun didaftarkan oleh administrator</p>
-          <p className="text-xs text-white/50">© {new Date().getFullYear()} Kantor Imigrasi Kelas II TPI Tanjung Balai Karimun</p>
-        </div>
+        <form onSubmit={handleLogin} className="w-full max-w-sm space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
+              className={inputCls} placeholder="nama@imigrasi.go.id" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
+              className={inputCls} placeholder="••••••••" />
+          </div>
+          {error && <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-2xl px-4 py-2.5">{error}</p>}
+          <button type="submit" disabled={loading} className="btn-pill-solid w-full justify-center py-3">
+            {loading ? 'Memproses…' : 'Masuk'}
+            {!loading && (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            )}
+          </button>
+        </form>
+
+        <p className="text-center text-xs text-slate-400 mt-8">
+          Akun didaftarkan oleh administrator · © {new Date().getFullYear()} Kantor Imigrasi Kelas II TPI Tanjung Balai Karimun
+        </p>
       </div>
     </div>
   )
