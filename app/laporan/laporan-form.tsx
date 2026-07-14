@@ -1,10 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-
-async function simpanLaporan(formData: FormData): Promise<{ error?: string }> {
-  return {}
-}
+import { simpanLaporan } from './actions'
 
 type Baris = {
   indikatorId: number; kode: string; nama: string; satuan: string
@@ -23,8 +20,12 @@ export default function LaporanForm({ periode, rows }: { periode: string; rows: 
     setLoading(true); setMsg(null)
     const res = await simpanLaporan(new FormData(e.currentTarget))
     setLoading(false)
-    if (res?.error) setMsg({ ok: false, text: res.error })
-    else { setMsg({ ok: true, text: 'Capaian berhasil disimpan.' }); router.refresh() }
+    if (res?.error) {
+      setMsg({ ok: false, text: res.error + (res.debug ? ' — DEBUG: ' + res.debug : '') })
+    } else {
+      setMsg({ ok: true, text: 'Capaian berhasil disimpan. DEBUG: ' + (res?.debug || '(tidak ada info debug)') })
+      router.refresh()
+    }
   }
 
   if (rows.length === 0) {
