@@ -10,15 +10,27 @@ function currentMonth() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 
-function StatTile({ label, value, sub, accent }: { label: string; value: string; sub?: string; accent: string }) {
+function StatTile({ label, value, sub, accent, icon }: { label: string; value: string; sub?: string; accent: string; icon: React.ReactNode }) {
   return (
-    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-      <p className="text-xs font-medium text-slate-500">{label}</p>
-      <p className={'text-2xl font-bold mt-1 tabular-nums ' + accent}>{value}</p>
-      {sub && <p className="text-xs text-slate-400 mt-0.5">{sub}</p>}
+    <div className="card-modern p-5 relative overflow-hidden">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs font-medium text-slate-500">{label}</p>
+          <p className={'text-3xl font-bold mt-1.5 tabular-nums ' + accent}>{value}</p>
+          {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
+        </div>
+        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+          {icon}
+        </div>
+      </div>
     </div>
   )
 }
+
+const IconChart = <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M7 13l3-3 3 3 4-6M4 19h16" /></svg>
+const IconCheck = <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+const IconAlert = <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>
+const IconList = <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h7" /></svg>
 
 export default async function DashboardPage({
   searchParams,
@@ -65,7 +77,7 @@ export default async function DashboardPage({
     <AppShell nama={nama} role={role} active="/dashboard" title="Dashboard">
       <div className="w-full space-y-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm flex-1 min-w-[260px]">
+          <div className="card-modern p-6 flex-1 min-w-[260px] glow-navy">
             <p className="text-sm text-slate-500">Selamat datang,</p>
             <p className="text-2xl font-bold text-slate-900 mt-1">{nama}</p>
             <div className="flex flex-wrap gap-2 mt-3">
@@ -79,21 +91,21 @@ export default async function DashboardPage({
               )}
             </div>
           </div>
-          <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
+          <div className="card-modern p-4">
             <label className="block text-xs font-medium text-slate-500 mb-1">Periode s.d. bulan</label>
             <PeriodeFilter periode={periodeBulan} />
           </div>
         </div>
 
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <StatTile label="Rata-rata capaian kantor" value={`${rataKantor}%`} accent="text-blue-600" />
-          <StatTile label="Indikator tercapai" value={`${tercapai}`} sub={`dari ${totalIndikator}`} accent="text-emerald-600" />
-          <StatTile label="Perlu perhatian" value={`${perluPerhatian}`} sub="capaian < 50%" accent="text-amber-600" />
-          <StatTile label="Total indikator" value={`${totalIndikator}`} accent="text-slate-700" />
+          <StatTile label="Rata-rata capaian kantor" value={`${rataKantor}%`} accent="text-blue-600" icon={IconChart} />
+          <StatTile label="Indikator tercapai" value={`${tercapai}`} sub={`dari ${totalIndikator}`} accent="text-emerald-600" icon={IconCheck} />
+          <StatTile label="Perlu perhatian" value={`${perluPerhatian}`} sub="capaian < 50%" accent="text-amber-600" icon={IconAlert} />
+          <StatTile label="Total indikator" value={`${totalIndikator}`} accent="text-slate-700" icon={IconList} />
         </div>
 
-        <section className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+        <section className="card-modern overflow-hidden">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
             <h2 className="text-base font-semibold text-slate-900">Capaian per seksi</h2>
             <span className="text-xs text-slate-400">s.d. {bulanLabel}</span>
           </div>
@@ -115,8 +127,8 @@ export default async function DashboardPage({
               </li>
             ))}
           </ul>
-          <div className="px-6 py-3 border-t border-slate-200 bg-slate-50">
-            <Link href="/monitoring" className="text-sm font-medium text-blue-600 hover:text-blue-700">Lihat detail di Monitoring →</Link>
+          <div className="px-6 py-3 border-t border-slate-100 bg-slate-50/60">
+            <Link href="/monitoring" className="text-sm font-medium text-blue-600 hover:text-blue-700">Lihat detail di Monitoring &rarr;</Link>
           </div>
         </section>
       </div>

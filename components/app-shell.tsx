@@ -16,9 +16,6 @@ const ROLE_LABEL: Record<Role, string> = {
   monitor: 'Kepala Kantor',
 }
 
-const NAVY = '#1b3168'
-const GOLD = '#f4b62a'
-
 export default function AppShell({
   nama, role, active, title, children,
 }: {
@@ -28,10 +25,15 @@ export default function AppShell({
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-100">
-      <header className="sticky top-0 z-20 text-white" style={{ backgroundColor: NAVY }}>
-        {/* Baris 1: tinggi bar DIKUNCI ke h-28 (lebih tinggi dari sebelumnya) */}
-        <div className="flex items-center justify-between gap-4 px-6 h-28">
-          <img src="/logo-simponik-putih.png" alt="SIMPONIK" className="h-75 w-auto" />
+      <header
+        className="sticky top-0 z-20 text-white relative overflow-hidden"
+        style={{ background: 'linear-gradient(120deg, #16234f 0%, #1b3168 55%, #223a78 100%)' }}
+      >
+        <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-amber-400/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-20 left-1/3 w-72 h-72 rounded-full bg-blue-300/10 blur-3xl" />
+
+        <div className="relative flex items-center justify-between gap-4 px-6 h-24">
+          <img src="/logo-simponik-putih.png" alt="SIMPONIK" className="h-16 w-auto" />
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold leading-tight">{nama}</p>
@@ -41,21 +43,22 @@ export default function AppShell({
           </div>
         </div>
 
-        {/* Baris 2: menu horizontal */}
-        <nav className="flex gap-1 overflow-x-auto px-4 border-t border-white/10">
+        <nav className="relative flex gap-1 overflow-x-auto px-4 border-t border-white/10">
           {links.map((l) => {
             const isActive = l.href === active
             return (
               <Link
                 key={l.href}
                 href={l.href}
-                className={'whitespace-nowrap px-4 py-3 text-sm transition border-b-2 ' +
-                  (isActive
-                    ? 'font-semibold text-white'
-                    : 'font-medium text-white/70 border-transparent hover:text-white hover:bg-white/5')}
-                style={isActive ? { borderBottomColor: GOLD } : undefined}
+                className={
+                  'relative whitespace-nowrap px-4 py-3 text-sm transition ' +
+                  (isActive ? 'font-semibold text-white' : 'font-medium text-white/70 hover:text-white')
+                }
               >
                 {l.label}
+                {isActive && (
+                  <span className="absolute left-3 right-3 -bottom-px h-0.5 rounded-full bg-amber-400 shadow-[0_0_10px_rgba(244,182,42,0.9)]" />
+                )}
               </Link>
             )
           })}
@@ -64,7 +67,7 @@ export default function AppShell({
 
       <main className="flex-1 p-6">
         <div className="w-full">
-          <h1 className="text-xl font-bold text-slate-900 mb-5">{title}</h1>
+          <h1 className="text-xl font-bold text-slate-900 mb-5 tracking-tight">{title}</h1>
           {children}
         </div>
       </main>
