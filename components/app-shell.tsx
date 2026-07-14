@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import LogoutButton from './logout-button'
+import LogoutButtonClient from './logout-button'
 
 type Role = 'admin' | 'pegawai' | 'monitor'
 
@@ -16,8 +16,6 @@ const ROLE_LABEL: Record<Role, string> = {
   monitor: 'Kepala Kantor',
 }
 
-const FEATURES = ['Transparan', 'Real-time', 'Akuntabel', 'Terukur', 'Berbasis Data']
-
 export default function AppShell({
   nama, role, active, title, children,
 }: {
@@ -27,30 +25,39 @@ export default function AppShell({
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50">
-      <header className="sticky top-0 z-20 bg-white">
-        <div className="flex items-center justify-between gap-4 px-8 h-24 border-b border-slate-100">
-          <img src="/logo-simponik.png" alt="SIMPONIK" className="h-14 w-auto" />
-          <div className="flex items-center gap-4">
+      <header className="sticky top-0 z-20 bg-white border-b border-slate-100">
+        <div className="flex items-center justify-between gap-6 px-8 h-20">
+          <div className="flex items-center gap-10">
+            <img src="/logo-simponik.png" alt="SIMPONIK" className="h-10 w-auto shrink-0" />
+            <nav className="hidden md:flex items-center gap-7">
+              {links.map((l) => {
+                const isActive = l.href === active
+                return (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    className={
+                      'text-sm whitespace-nowrap transition ' +
+                      (isActive ? 'font-bold text-slate-900' : 'font-medium text-slate-500 hover:text-slate-800')
+                    }
+                  >
+                    {l.label}
+                  </Link>
+                )
+              })}
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-4 shrink-0">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold leading-tight text-slate-800">{nama}</p>
               <p className="text-xs text-slate-500">{ROLE_LABEL[role]}</p>
             </div>
-            <LogoutButton />
+            <LogoutButtonClient />
           </div>
         </div>
 
-        <div className="feature-strip overflow-hidden">
-          <div className="flex items-center gap-8 px-8 py-2 overflow-x-auto">
-            {FEATURES.map((f) => (
-              <span key={f} className="feature-strip-item">
-                <svg className="w-3.5 h-3.5 text-amber-300" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2l2.2 5.6L18 9l-4.5 3.9L15 19l-5-3.3L5 19l1.5-6.1L2 9l5.8-1.4z"/></svg>
-                {f}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        <nav className="flex justify-center gap-8 px-8 border-b border-slate-100">
+        <nav className="md:hidden flex gap-1 overflow-x-auto px-4 pb-2 border-t border-slate-100">
           {links.map((l) => {
             const isActive = l.href === active
             return (
@@ -58,14 +65,11 @@ export default function AppShell({
                 key={l.href}
                 href={l.href}
                 className={
-                  'relative whitespace-nowrap py-4 text-sm transition ' +
-                  (isActive ? 'font-bold text-blue-700' : 'font-medium text-slate-400 hover:text-slate-700')
+                  'whitespace-nowrap px-3 py-1.5 mt-2 rounded-full text-sm ' +
+                  (isActive ? 'font-bold bg-slate-900 text-white' : 'font-medium text-slate-500 bg-slate-100')
                 }
               >
                 {l.label}
-                {isActive && (
-                  <span className="absolute left-0 right-0 -bottom-px h-[3px] rounded-full bg-amber-400" />
-                )}
               </Link>
             )
           })}
