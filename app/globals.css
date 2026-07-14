@@ -29,8 +29,10 @@
 body {
   background-color: #eef1f8;
   background-image:
-    radial-gradient(circle at 15% 0%, rgba(30,58,107,0.06) 0%, transparent 40%),
-    radial-gradient(circle at 100% 20%, rgba(244,182,42,0.07) 0%, transparent 35%);
+    radial-gradient(circle at 10% 0%, rgba(30,58,107,0.08) 0%, transparent 42%),
+    radial-gradient(circle at 100% 15%, rgba(244,182,42,0.09) 0%, transparent 38%),
+    radial-gradient(rgba(30,58,107,0.08) 1px, transparent 1px);
+  background-size: auto, auto, 22px 22px;
   background-attachment: fixed;
   color: #0f172a;
 }
@@ -43,25 +45,36 @@ button, [role="button"] {
 button:active:not(:disabled), [role="button"]:active { transform: scale(0.97); }
 button:disabled { cursor: not-allowed; }
 
-/* Kartu bergaya modern: sudut lebih membulat + bayangan lembut + garis tepi tipis bergradasi */
 .card-modern {
   position: relative;
-  background: #ffffff;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(8px);
   border-radius: 1.25rem;
   border: 1px solid rgba(30,58,107,0.08);
   box-shadow: 0 1px 2px rgba(15,23,42,0.04), 0 8px 24px -12px rgba(15,23,42,0.10);
   transition: box-shadow 200ms ease, transform 200ms ease;
 }
 .card-modern:hover {
-  box-shadow: 0 4px 8px rgba(15,23,42,0.05), 0 16px 32px -12px rgba(30,58,107,0.16);
-  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(15,23,42,0.06), 0 20px 40px -14px rgba(30,58,107,0.22);
+  transform: translateY(-3px);
 }
 
-/* Aksen cahaya lembut (glow) untuk elemen penting */
-.glow-navy { box-shadow: 0 0 0 1px rgba(30,58,107,0.12), 0 8px 24px -8px rgba(30,58,107,0.35); }
-.glow-gold { box-shadow: 0 0 16px rgba(244,182,42,0.55); }
+.card-accent-top { position: relative; overflow: hidden; }
+.card-accent-top::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: var(--accent-color, linear-gradient(90deg, #1e3a6b, #f4b62a));
+}
 
-/* Scrollbar tipis modern */
+.glow-navy { box-shadow: 0 0 0 1px rgba(30,58,107,0.12), 0 8px 28px -8px rgba(30,58,107,0.40); }
+.glow-gold { box-shadow: 0 0 18px rgba(244,182,42,0.55); }
+
+.glass-dark {
+  background: rgba(15,25,55,0.55);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
 ::-webkit-scrollbar { height: 8px; width: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(30,58,107,0.25); border-radius: 9999px; }

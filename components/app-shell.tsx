@@ -27,13 +27,17 @@ export default function AppShell({
     <div className="min-h-screen flex flex-col bg-slate-100">
       <header
         className="sticky top-0 z-20 text-white relative overflow-hidden"
-        style={{ background: 'linear-gradient(120deg, #16234f 0%, #1b3168 55%, #223a78 100%)' }}
+        style={{ background: 'linear-gradient(120deg, #101d38 0%, #1b3168 55%, #26428c 100%)' }}
       >
-        <div className="pointer-events-none absolute -top-24 -right-16 w-72 h-72 rounded-full bg-amber-400/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-20 left-1/3 w-72 h-72 rounded-full bg-blue-300/10 blur-3xl" />
+        <div className="pointer-events-none absolute -top-28 -right-20 w-80 h-80 rounded-full bg-amber-400/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 left-1/4 w-80 h-80 rounded-full bg-blue-300/15 blur-3xl" />
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.06]"
+          style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '28px 28px' }}
+        />
 
-        <div className="relative flex items-center justify-between gap-4 px-6 h-24">
-          <img src="/logo-simponik-putih.png" alt="SIMPONIK" className="h-16 w-auto" />
+        <div className="relative flex items-center justify-between gap-4 px-6 h-28">
+          <img src="/logo-simponik-putih.png" alt="SIMPONIK" className="h-20 w-auto" />
           <div className="flex items-center gap-3">
             <div className="text-right hidden sm:block">
               <p className="text-sm font-semibold leading-tight">{nama}</p>
@@ -51,13 +55,13 @@ export default function AppShell({
                 key={l.href}
                 href={l.href}
                 className={
-                  'relative whitespace-nowrap px-4 py-3 text-sm transition ' +
-                  (isActive ? 'font-semibold text-white' : 'font-medium text-white/70 hover:text-white')
+                  'relative whitespace-nowrap px-4 py-3 text-sm transition rounded-t-lg ' +
+                  (isActive ? 'font-semibold text-white bg-white/10' : 'font-medium text-white/70 hover:text-white hover:bg-white/5')
                 }
               >
                 {l.label}
                 {isActive && (
-                  <span className="absolute left-3 right-3 -bottom-px h-0.5 rounded-full bg-amber-400 shadow-[0_0_10px_rgba(244,182,42,0.9)]" />
+                  <span className="absolute left-3 right-3 -bottom-px h-0.5 rounded-full bg-amber-400 shadow-[0_0_12px_rgba(244,182,42,0.9)]" />
                 )}
               </Link>
             )

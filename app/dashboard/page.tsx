@@ -10,16 +10,16 @@ function currentMonth() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 
-function StatTile({ label, value, sub, accent, icon }: { label: string; value: string; sub?: string; accent: string; icon: React.ReactNode }) {
+function StatTile({ label, value, sub, accent, barColor, icon }: { label: string; value: string; sub?: string; accent: string; barColor: string; icon: React.ReactNode }) {
   return (
-    <div className="card-modern p-5 relative overflow-hidden">
+    <div className="card-modern card-accent-top p-5" style={{ ['--accent-color' as string]: barColor }}>
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs font-medium text-slate-500">{label}</p>
           <p className={'text-3xl font-bold mt-1.5 tabular-nums ' + accent}>{value}</p>
           {sub && <p className="text-xs text-slate-400 mt-1">{sub}</p>}
         </div>
-        <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+        <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
           {icon}
         </div>
       </div>
@@ -77,7 +77,7 @@ export default async function DashboardPage({
     <AppShell nama={nama} role={role} active="/dashboard" title="Dashboard">
       <div className="w-full space-y-6">
         <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="card-modern p-6 flex-1 min-w-[260px] glow-navy">
+          <div className="card-modern glow-navy p-6 flex-1 min-w-[260px]">
             <p className="text-sm text-slate-500">Selamat datang,</p>
             <p className="text-2xl font-bold text-slate-900 mt-1">{nama}</p>
             <div className="flex flex-wrap gap-2 mt-3">
@@ -98,10 +98,10 @@ export default async function DashboardPage({
         </div>
 
         <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <StatTile label="Rata-rata capaian kantor" value={`${rataKantor}%`} accent="text-blue-600" icon={IconChart} />
-          <StatTile label="Indikator tercapai" value={`${tercapai}`} sub={`dari ${totalIndikator}`} accent="text-emerald-600" icon={IconCheck} />
-          <StatTile label="Perlu perhatian" value={`${perluPerhatian}`} sub="capaian < 50%" accent="text-amber-600" icon={IconAlert} />
-          <StatTile label="Total indikator" value={`${totalIndikator}`} accent="text-slate-700" icon={IconList} />
+          <StatTile label="Rata-rata capaian kantor" value={`${rataKantor}%`} accent="text-blue-600" barColor="#1e3a6b" icon={IconChart} />
+          <StatTile label="Indikator tercapai" value={`${tercapai}`} sub={`dari ${totalIndikator}`} accent="text-emerald-600" barColor="#059669" icon={IconCheck} />
+          <StatTile label="Perlu perhatian" value={`${perluPerhatian}`} sub="capaian < 50%" accent="text-amber-600" barColor="#f4b62a" icon={IconAlert} />
+          <StatTile label="Total indikator" value={`${totalIndikator}`} accent="text-slate-700" barColor="#64748b" icon={IconList} />
         </div>
 
         <section className="card-modern overflow-hidden">
