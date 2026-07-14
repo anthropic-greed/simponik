@@ -32,17 +32,18 @@ export async function simpanLaporan(formData: FormData) {
     })
   }
 
-  if (rows.length === 0) return { error: 'Belum ada angka yang diisi.' }
+  if (rows.length === 0) {
+    return { error: 'Belum ada angka yang diisi.', debug: 'rows kosong — tidak ada input yang terbaca dari form.' }
+  }
 
   const { error } = await supabase
     .from('laporan_kinerja')
     .upsert(rows, { onConflict: 'indikator_id,periode' })
 
-  console.log('[simpanLaporan] rows:', JSON.stringify(rows))
-  console.log('[simpanLaporan] error:', error ? JSON.stringify(error) : 'tidak ada, berhasil')
-
-  if (error) return { error: error.message }
+  if (error) {
+    return { error: error.message, debug: JSON.stringify(error) }
+  }
 
   revalidatePath('/laporan')
-  return { success: true }
+  return { success: true, debug: `Tersimpan ${rows.length} baris: ${JSON.stringify(rows)}` }
 }
