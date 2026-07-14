@@ -28,7 +28,7 @@ export default function AppShell({
       <header className="sticky top-0 z-20 bg-white border-b border-slate-100">
         <div className="flex items-center justify-between gap-6 px-8 h-20">
           <div className="flex items-center gap-10">
-            <img src="/logo-simponik.png" alt="SIMPONIK" className="h-10 w-auto shrink-0" />
+            <img src="/logo-simponik.png" alt="SIMPONIK" className="h-50 w-auto shrink-0" />
             <nav className="hidden md:flex items-center gap-7">
               {links.map((l) => {
                 const isActive = l.href === active
