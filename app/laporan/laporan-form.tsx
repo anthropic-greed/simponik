@@ -21,9 +21,9 @@ export default function LaporanForm({ periode, rows }: { periode: string; rows: 
     const res = await simpanLaporan(new FormData(e.currentTarget))
     setLoading(false)
     if (res?.error) {
-      setMsg({ ok: false, text: res.error + (res.debug ? ' — DEBUG: ' + res.debug : '') })
+      setMsg({ ok: false, text: res.error })
     } else {
-      setMsg({ ok: true, text: 'Capaian berhasil disimpan. DEBUG: ' + (res?.debug || '(tidak ada info debug)') })
+      setMsg({ ok: true, text: 'Capaian berhasil disimpan.' })
       router.refresh()
     }
   }
