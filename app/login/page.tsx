@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -25,16 +25,20 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-white flex flex-col lg:flex-row">
-      {/* Panel warna besar, ala referensi */}
-      <div
-        className="relative overflow-hidden lg:w-1/2 min-h-[280px] lg:min-h-screen flex flex-col justify-center px-10 py-16 text-white"
-        style={{ background: 'linear-gradient(160deg, #1e3a6b 0%, #142647 100%)' }}
-      >
+      <div className="relative overflow-hidden lg:w-1/2 min-h-[280px] lg:min-h-screen flex flex-col justify-center px-10 py-16 text-white">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: 'url(/kantor-gerbang.jpg)' }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: 'linear-gradient(160deg, rgba(30,58,107,0.88) 0%, rgba(20,38,71,0.92) 100%)' }}
+        />
         <div className="blob w-96 h-96 bg-amber-400/20 -top-20 -left-20" />
         <div className="blob w-80 h-80 bg-blue-300/20 bottom-0 right-0" />
 
         <div className="relative z-10 max-w-md">
-          <img src="/logo-simponik.png" alt="SIMPONIK" className="h-12 w-auto bg-white rounded-xl px-3 py-2 mb-8 inline-block" />
+          <img src="/logo-simponik.png" alt="SIMPONIK" className="h-24 w-auto mb-8" />
           <h1 className="text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight">
             Kinerja terukur,<br />pelayanan terjaga
           </h1>
@@ -49,7 +53,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Panel form */}
       <div className="flex-1 flex items-center justify-center px-6 py-16">
         <div className="w-full max-w-sm">
           <h2 className="text-2xl font-bold text-slate-900 mb-1">Selamat datang kembali</h2>
