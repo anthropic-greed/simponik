@@ -32,23 +32,23 @@ export default function LoginPage() {
         />
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(160deg, rgba(30,58,107,0.88) 0%, rgba(20,38,71,0.92) 100%)' }}
+          style={{ background: 'linear-gradient(160deg, rgba(30,58,107,0.62) 0%, rgba(20,38,71,0.68) 100%)' }}
         />
         <div className="blob w-96 h-96 bg-amber-400/20 -top-20 -left-20" />
         <div className="blob w-80 h-80 bg-blue-300/20 bottom-0 right-0" />
 
         <div className="relative z-10 max-w-md">
-          <img src="/logo-simponik.png" alt="SIMPONIK" className="h-24 w-auto mb-8" />
-          <h1 className="text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight">
+          <img src="/logo-simponik.png" alt="SIMPONIK" className="h-32 w-auto mb-8" />
+          <h1 className="text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight drop-shadow-md">
             Kinerja terukur,<br />pelayanan terjaga
           </h1>
-          <p className="text-blue-100 mt-5 text-lg">
+          <p className="text-blue-50 mt-5 text-lg drop-shadow">
             Satu sistem untuk memantau capaian kinerja seluruh seksi, kapan saja, di mana saja.
           </p>
           <div className="badge-row mt-8">
-            <span className="badge-pill !bg-white/10 !text-white !border-white/20">4 Seksi Aktif</span>
-            <span className="badge-pill !bg-white/10 !text-white !border-white/20">20 Indikator</span>
-            <span className="badge-pill !bg-white/10 !text-white !border-white/20">Real-time</span>
+            <span className="badge-pill !bg-white/15 !text-white !border-white/25">4 Seksi Aktif</span>
+            <span className="badge-pill !bg-white/15 !text-white !border-white/25">20 Indikator</span>
+            <span className="badge-pill !bg-white/15 !text-white !border-white/25">Real-time</span>
           </div>
         </div>
       </div>
