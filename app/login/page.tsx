@@ -38,7 +38,7 @@ export default function LoginPage() {
         <div className="blob w-80 h-80 bg-blue-300/20 bottom-0 right-0" />
 
         <div className="relative z-10 max-w-md">
-          <img src="/logo-simponik.png" alt="SIMPONIK" className="h-32 w-auto mb-8" />
+          <img src="/logo-simponik.png" alt="SIMPONIK" className="h-[280px] w-auto mb-8" />
           <h1 className="text-4xl sm:text-5xl font-extrabold leading-[1.1] tracking-tight drop-shadow-md">
             Kinerja terukur,<br />pelayanan terjaga
           </h1>
