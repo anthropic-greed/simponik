@@ -1,6 +1,6 @@
-"use client"
+'use client'
 
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -33,7 +33,7 @@ export default function LoginPage() {
             style={{ background: 'linear-gradient(160deg, #1e3a6b 0%, #325394 45%, #f4b62a 130%)' }}
           >
             <div className="absolute inset-0 opacity-40" style={{ background: 'radial-gradient(circle at 30% 20%, rgba(50,83,148,0.9), transparent 60%), radial-gradient(circle at 80% 90%, rgba(244,182,42,0.5), transparent 55%)' }} />
-            <img src="/logo-simponik-putih.png" alt="SIMPONIK" className="relative z-10 w-full h-auto mb-8" />
+            <img src="/logo-simponik-mark.png" alt="SIMPONIK" className="relative z-10 w-full h-auto mb-8" />
             <div className="relative z-10 text-white">
               <p className="text-white/70 text-sm mb-1">Anda dapat dengan mudah</p>
               <p className="text-2xl sm:text-3xl font-extrabold leading-snug">
