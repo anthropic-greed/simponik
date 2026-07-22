@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
@@ -13,7 +13,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleLogin(e: FormEvent) {
     e.preventDefault()
     setLoading(true); setError('')
     const { error } = await supabase.auth.signInWithPassword({ email, password })
@@ -29,11 +29,10 @@ export default function LoginPage() {
       <div className="w-full max-w-5xl bg-white rounded-[2rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row min-h-[600px]">
         <div className="relative lg:w-1/2 min-h-[240px] lg:min-h-full overflow-hidden p-3">
           <div
-            className="relative w-full h-full rounded-[1.5rem] overflow-hidden flex flex-col justify-between p-8"
+            className="relative w-full h-full rounded-[1.5rem] overflow-hidden flex flex-col justify-end p-8"
             style={{ background: 'linear-gradient(160deg, #1e3a6b 0%, #325394 45%, #f4b62a 130%)' }}
           >
             <div className="absolute inset-0 opacity-40" style={{ background: 'radial-gradient(circle at 30% 20%, rgba(50,83,148,0.9), transparent 60%), radial-gradient(circle at 80% 90%, rgba(244,182,42,0.5), transparent 55%)' }} />
-            <img src="/logo-simponik-putih.png" alt="SIMPONIK" className="relative z-10 h-9 w-auto" />
             <div className="relative z-10 text-white">
               <p className="text-white/70 text-sm mb-1">Anda dapat dengan mudah</p>
               <p className="text-2xl sm:text-3xl font-extrabold leading-snug">
@@ -44,7 +43,6 @@ export default function LoginPage() {
         </div>
 
         <div className="flex-1 flex flex-col justify-center px-8 sm:px-14 py-12">
-          <img src="/logo-simponik.png" alt="SIMPONIK" className="h-9 w-auto mb-6" />
           <h2 className="text-3xl font-extrabold text-slate-900">Masuk ke SIMPONIK</h2>
           <p className="text-sm text-slate-500 mt-2 mb-8">
             Akses laporan kinerja seksi Anda kapan saja, di mana saja.
