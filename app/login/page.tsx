@@ -34,11 +34,11 @@ export default function LoginPage() {
             style={{ background: 'linear-gradient(160deg, #1e3a6b 0%, #325394 45%, #f4b62a 130%)' }}
           >
             <div className="absolute inset-0 opacity-40" style={{ background: 'radial-gradient(circle at 30% 20%, rgba(50,83,148,0.9), transparent 60%), radial-gradient(circle at 80% 90%, rgba(244,182,42,0.5), transparent 55%)' }} />
-            <span className="relative z-10 text-white text-3xl font-black">*</span>
+            <img src="/logo-simponik-mark.png" alt="SIMPONIK" className="relative z-10 h-8 w-auto" />
             <div className="relative z-10 text-white">
-              <p className="text-white/70 text-sm mb-1">Anda dapat dengan mudah</p>
+              <p className="text-white/70 text-sm mb-1">Kantor Imigrasi Kelas II TPI Karimun</p>
               <p className="text-2xl sm:text-3xl font-extrabold leading-snug">
-                Memantau capaian kinerja seluruh seksi dalam satu tempat
+                Sistem Monitoring dan Pelaporan Kinerja
               </p>
             </div>
           </div>
@@ -46,7 +46,7 @@ export default function LoginPage() {
 
         {/* Panel form kanan */}
         <div className="flex-1 flex flex-col justify-center px-8 sm:px-14 py-12">
-          <span className="text-blue-700 text-2xl font-black mb-3">*</span>
+          <img src="/logo-simponik-mark.png" alt="SIMPONIK" className="h-6 w-auto mb-6" style={{ filter: 'invert(20%) sepia(40%) saturate(1200%) hue-rotate(190deg)' }} />
           <h2 className="text-3xl font-extrabold text-slate-900">Masuk ke SIMPONIK</h2>
           <p className="text-sm text-slate-500 mt-2 mb-8">
             Akses laporan kinerja seksi Anda kapan saja, di mana saja.
