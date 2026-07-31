@@ -1,6 +1,8 @@
+import { redirect } from 'next/navigation'
 import AppShell from '@/components/app-shell'
 import { requireProfile } from '@/lib/get-profile'
 import MonitoringFilter from './monitoring-filter'
+import PdfButton from './pdf-button'
 
 const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
 const fmt = (n: number) => n.toLocaleString('id-ID')
@@ -21,7 +23,7 @@ export default async function MonitoringPage({
 }: {
   searchParams: Promise<{ periode?: string }>
 }) {
-  const { supabase, nama, role } = await requireProfile() 
+  const { supabase, nama, role } = await requireProfile()
 
   const sp = await searchParams
   const periodeBulan = /^\d{4}-\d{2}$/.test(sp.periode || '') ? sp.periode! : currentMonth()
@@ -55,6 +57,8 @@ export default async function MonitoringPage({
     return { seksi: s, items, avg }
   })
 
+  const pdfData = grouped.map((g) => ({ nama: g.seksi.nama, items: g.items, avg: g.avg }))
+
   return (
     <AppShell nama={nama} role={role} active="/monitoring" title="Monitoring">
       <div className="w-full space-y-5">
@@ -63,7 +67,10 @@ export default async function MonitoringPage({
             <h2 className="text-lg font-semibold text-slate-900">Rekap capaian seluruh seksi</h2>
             <p className="text-sm text-slate-500">Periode s.d. {bulanLabel}</p>
           </div>
-          <MonitoringFilter periode={periodeBulan} />
+          <div className="flex items-end gap-3">
+            <MonitoringFilter periode={periodeBulan} />
+            <PdfButton bulanLabel={bulanLabel} seksiData={pdfData} />
+          </div>
         </div>
 
         {grouped.map(({ seksi, items, avg }) => {
