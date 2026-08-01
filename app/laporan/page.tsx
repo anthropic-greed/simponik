@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import AppShell from '@/components/app-shell'
 import { requireProfile } from '@/lib/get-profile'
+import { hitungCapaian } from '@/lib/kinerja'
 import LaporanFilter from './laporan-filter'
 import LaporanForm from './laporan-form'
 
@@ -25,7 +26,6 @@ export default async function LaporanPage({
   const [yy, mm] = periodeBulan.split('-')
   const bulanLabel = `${BULAN[Number(mm) - 1]} ${yy}`
 
-  // Tentukan seksi yang ditampilkan
   let seksiList: { id: number; nama: string }[] | null = null
   let seksiAktif: number | null = mySeksiId
   let seksiNamaAktif = seksiNama
@@ -65,12 +65,16 @@ export default async function LaporanPage({
   const rows = (indikator ?? []).map((i) => {
     const milik = (laporan ?? []).filter((l) => l.indikator_id === i.id)
     const current = milik.find((l) => l.periode === periodeDate)?.realisasi
-    const cumulative = milik.reduce((s, l) => s + Number(l.realisasi), 0)
+    const target = Number(i.target_tahunan)
+    const { cumulative, pct, isTahunan, needsInput } = hitungCapaian(target, milik, periodeBulan)
     return {
       indikatorId: i.id, kode: i.kode, nama: i.nama, satuan: i.satuan,
-      target: Number(i.target_tahunan),
+      target,
       current: current === undefined ? null : Number(current),
       cumulative,
+      pct,
+      isTahunan,
+      needsInput,
     }
   })
 

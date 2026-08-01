@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import AppShell from '@/components/app-shell'
 import { requireProfile } from '@/lib/get-profile'
+import { hitungCapaian } from '@/lib/kinerja'
 import MonitoringFilter from './monitoring-filter'
 import PdfButton from './pdf-button'
 
@@ -46,12 +47,10 @@ export default async function MonitoringPage({
     const items = (indikator ?? [])
       .filter((i) => i.seksi_id === s.id)
       .map((i) => {
-        const cumulative = (laporan ?? [])
-          .filter((l) => l.indikator_id === i.id)
-          .reduce((a, l) => a + Number(l.realisasi), 0)
+        const milik = (laporan ?? []).filter((l) => l.indikator_id === i.id)
         const target = Number(i.target_tahunan)
-        const pct = target > 0 ? Math.round((cumulative / target) * 100) : 0
-        return { id: i.id, kode: i.kode, nama: i.nama, satuan: i.satuan, target, cumulative, pct }
+        const { cumulative, pct, isTahunan } = hitungCapaian(target, milik, periodeBulan)
+        return { id: i.id, kode: i.kode, nama: i.nama, satuan: i.satuan, target, cumulative, pct, isTahunan }
       })
     const avg = items.length ? Math.round(items.reduce((a, it) => a + it.pct, 0) / items.length) : 0
     return { seksi: s, items, avg }
@@ -104,12 +103,14 @@ export default async function MonitoringPage({
                           <tr key={it.id}>
                             <td className="px-6 py-3">
                               <p className="font-medium text-slate-800">{it.nama}</p>
-                              <p className="text-xs text-slate-400 mt-0.5">{it.kode}</p>
+                              <p className="text-xs text-slate-400 mt-0.5">{it.kode}{it.isTahunan ? ' · otomatis' : ''}</p>
                             </td>
                             <td className="px-4 py-3 text-right text-slate-600 whitespace-nowrap tabular-nums">
                               {fmt(it.target)} <span className="text-slate-400">{it.satuan}</span>
                             </td>
-                            <td className="px-4 py-3 text-right text-slate-700 whitespace-nowrap tabular-nums">{fmt(it.cumulative)}</td>
+                            <td className="px-4 py-3 text-right text-slate-700 whitespace-nowrap tabular-nums">
+                              {it.isTahunan ? `Bulan ke-${it.cumulative}/12` : fmt(it.cumulative)}
+                            </td>
                             <td className="px-4 py-3">
                               <div className="flex items-center gap-2">
                                 <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden">
