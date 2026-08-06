@@ -5,6 +5,7 @@ import { hitungCapaian } from '@/lib/kinerja'
 import PeriodeFilter from './periode-filter'
 
 const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
+const SEKSI_OTOMATIS = ['TU', 'TIKKIM']
 
 function currentMonth() {
   const d = new Date()
@@ -46,7 +47,7 @@ export default async function DashboardPage({
   const [yy, mm] = periodeBulan.split('-')
   const bulanLabel = `${BULAN[Number(mm) - 1]} ${yy}`
 
-  const { data: seksiList } = await supabase.from('seksi').select('id, nama').order('id')
+  const { data: seksiList } = await supabase.from('seksi').select('id, nama, kode').order('id')
   const { data: indikator } = await supabase
     .from('indikator_kinerja').select('id, seksi_id, target_tahunan')
   const { data: laporan } = await supabase
@@ -54,9 +55,11 @@ export default async function DashboardPage({
     .gte('periode', `${yy}-01-01`).lte('periode', periodeDate)
 
   const indPct = (indikator ?? []).map((i) => {
+    const seksiKode = (seksiList ?? []).find((s) => s.id === i.seksi_id)?.kode ?? ''
+    const otomatisAktif = SEKSI_OTOMATIS.includes(seksiKode)
     const milik = (laporan ?? []).filter((l) => l.indikator_id === i.id)
     const target = Number(i.target_tahunan)
-    const { pct } = hitungCapaian(target, milik, periodeBulan)
+    const { pct } = hitungCapaian(target, milik, periodeBulan, otomatisAktif)
     return { seksi_id: i.seksi_id, pct }
   })
 

@@ -1,9 +1,10 @@
 ﻿export function hitungCapaian(
   target: number,
   laporanBulanan: { periode: string; realisasi: number | string }[],
-  periodeBulan: string
+  periodeBulan: string,
+  otomatisAktif: boolean
 ) {
-  const isTahunan = target === 1
+  const isTahunan = otomatisAktif && target === 1
 
   if (isTahunan) {
     const parts = periodeBulan.split('-')

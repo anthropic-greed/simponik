@@ -6,6 +6,7 @@ import LaporanFilter from './laporan-filter'
 import LaporanForm from './laporan-form'
 
 const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
+const SEKSI_OTOMATIS = ['TU', 'TIKKIM']
 
 function currentMonth() {
   const d = new Date()
@@ -29,12 +30,17 @@ export default async function LaporanPage({
   let seksiList: { id: number; nama: string }[] | null = null
   let seksiAktif: number | null = mySeksiId
   let seksiNamaAktif = seksiNama
+  let seksiKodeAktif = ''
+
+  const { data: seksiFull } = await supabase.from('seksi').select('id, nama, kode').order('id')
+
   if (role === 'admin') {
-    const { data } = await supabase.from('seksi').select('id, nama').order('id')
-    seksiList = data ?? []
+    seksiList = (seksiFull ?? []).map((s) => ({ id: s.id, nama: s.nama }))
     seksiAktif = sp.seksi ? Number(sp.seksi) : (seksiList[0]?.id ?? null)
     seksiNamaAktif = seksiList.find((s) => s.id === seksiAktif)?.nama
   }
+  seksiKodeAktif = (seksiFull ?? []).find((s) => s.id === seksiAktif)?.kode ?? ''
+  const otomatisAktif = SEKSI_OTOMATIS.includes(seksiKodeAktif)
 
   if (!seksiAktif) {
     return (
@@ -66,7 +72,7 @@ export default async function LaporanPage({
     const milik = (laporan ?? []).filter((l) => l.indikator_id === i.id)
     const current = milik.find((l) => l.periode === periodeDate)?.realisasi
     const target = Number(i.target_tahunan)
-    const { cumulative, pct, isTahunan, needsInput } = hitungCapaian(target, milik, periodeBulan)
+    const { cumulative, pct, isTahunan, needsInput } = hitungCapaian(target, milik, periodeBulan, otomatisAktif)
     return {
       indikatorId: i.id, kode: i.kode, nama: i.nama, satuan: i.satuan,
       target,

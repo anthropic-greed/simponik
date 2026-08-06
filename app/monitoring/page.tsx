@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation'
 import AppShell from '@/components/app-shell'
 import { requireProfile } from '@/lib/get-profile'
 import { hitungCapaian } from '@/lib/kinerja'
@@ -6,6 +5,7 @@ import MonitoringFilter from './monitoring-filter'
 import PdfButton from './pdf-button'
 
 const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
+const SEKSI_OTOMATIS = ['TU', 'TIKKIM']
 const fmt = (n: number) => n.toLocaleString('id-ID')
 
 function currentMonth() {
@@ -32,7 +32,7 @@ export default async function MonitoringPage({
   const [yy, mm] = periodeBulan.split('-')
   const bulanLabel = `${BULAN[Number(mm) - 1]} ${yy}`
 
-  const { data: seksiList } = await supabase.from('seksi').select('id, nama').order('id')
+  const { data: seksiList } = await supabase.from('seksi').select('id, nama, kode').order('id')
   const { data: indikator } = await supabase
     .from('indikator_kinerja')
     .select('id, seksi_id, kode, nama, satuan, target_tahunan')
@@ -44,12 +44,13 @@ export default async function MonitoringPage({
     .lte('periode', periodeDate)
 
   const grouped = (seksiList ?? []).map((s) => {
+    const otomatisAktif = SEKSI_OTOMATIS.includes(s.kode)
     const items = (indikator ?? [])
       .filter((i) => i.seksi_id === s.id)
       .map((i) => {
         const milik = (laporan ?? []).filter((l) => l.indikator_id === i.id)
         const target = Number(i.target_tahunan)
-        const { cumulative, pct, isTahunan } = hitungCapaian(target, milik, periodeBulan)
+        const { cumulative, pct, isTahunan } = hitungCapaian(target, milik, periodeBulan, otomatisAktif)
         return { id: i.id, kode: i.kode, nama: i.nama, satuan: i.satuan, target, cumulative, pct, isTahunan }
       })
     const avg = items.length ? Math.round(items.reduce((a, it) => a + it.pct, 0) / items.length) : 0
