@@ -1,4 +1,4 @@
-import Link from 'next/link'
+﻿import Link from 'next/link'
 import LogoutButton from './logout-button'
 
 type Role = 'admin' | 'pegawai' | 'monitor'
