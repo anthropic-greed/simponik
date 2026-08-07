@@ -1,4 +1,5 @@
-﻿import Link from 'next/link'
+﻿'use client'
+import Link from 'next/link'
 import LogoutButton from './logout-button'
 
 type Role = 'admin' | 'pegawai' | 'monitor'
@@ -45,7 +46,7 @@ export default function AppShell({
         />
 
         <div className="relative px-6 py-4 flex justify-center">
-          <img src="/logo-simponik-mark.png" alt="SIMPONIK logo mark in corporate blue tones displayed in the sidebar of the dashboard" className="h-50 w-auto" />
+          <img src="/logo-simponik-mark.png" alt="SIMPONIK" className="h-6 w-auto" style={{ filter: 'brightness(0) invert(1)' }} />
         </div>
 
         <nav className="relative px-4 py-2 space-y-2">
@@ -72,19 +73,31 @@ export default function AppShell({
           })}
         </nav>
 
-        {/* Ilustrasi garis bangunan dekoratif */}
-        <div className="relative flex-1 flex items-end justify-center px-6 opacity-40">
-          <svg viewBox="0 0 200 140" className="w-full max-w-[180px]" fill="none" stroke="white" strokeWidth="0.7">
-            <rect x="20" y="60" width="160" height="70" />
-            <line x1="20" y1="80" x2="180" y2="80" />
-            <line x1="20" y1="100" x2="180" y2="100" />
-            <line x1="20" y1="120" x2="180" y2="120" />
-            <line x1="55" y1="60" x2="55" y2="130" />
-            <line x1="90" y1="60" x2="90" y2="130" />
-            <line x1="125" y1="60" x2="125" y2="130" />
-            <line x1="160" y1="60" x2="160" y2="130" />
-            <path d="M20 60 L100 20 L180 60" />
-            <line x1="100" y1="20" x2="100" y2="60" />
+        {/* Ornamen dekoratif tengah */}
+        <div className="relative flex-1 flex items-center justify-center px-6 overflow-hidden">
+          <svg viewBox="0 0 200 220" className="w-full max-w-[200px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="100" cy="110" r="80" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
+            <circle cx="100" cy="110" r="60" stroke="rgba(255,255,255,0.08)" strokeWidth="1" strokeDasharray="6 4" />
+            <circle cx="100" cy="110" r="40" stroke="rgba(255,255,255,0.10)" strokeWidth="1" />
+            <circle cx="100" cy="110" r="20" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+            <line x1="36" y1="46" x2="164" y2="174" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+            <line x1="164" y1="46" x2="36" y2="174" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+            <line x1="100" y1="30" x2="100" y2="190" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+            <line x1="20" y1="110" x2="180" y2="110" stroke="rgba(255,255,255,0.04)" strokeWidth="1" />
+            <circle cx="100" cy="30" r="3" fill="rgba(96,165,250,0.7)" />
+            <circle cx="180" cy="110" r="2" fill="rgba(96,165,250,0.5)" />
+            <circle cx="100" cy="190" r="2.5" fill="rgba(96,165,250,0.4)" />
+            <circle cx="20" cy="110" r="2" fill="rgba(96,165,250,0.5)" />
+            <circle cx="55" cy="55" r="1.5" fill="rgba(255,255,255,0.3)" />
+            <circle cx="145" cy="55" r="1" fill="rgba(255,255,255,0.2)" />
+            <circle cx="160" cy="140" r="1.5" fill="rgba(255,255,255,0.25)" />
+            <circle cx="40" cy="150" r="1" fill="rgba(255,255,255,0.2)" />
+            <circle cx="130" cy="170" r="1" fill="rgba(96,165,250,0.4)" />
+            <circle cx="70" cy="170" r="1.5" fill="rgba(96,165,250,0.3)" />
+            <rect x="82" y="92" width="36" height="36" rx="8" fill="rgba(37,99,235,0.25)" stroke="rgba(96,165,250,0.4)" strokeWidth="1" />
+            <polyline points="90,118 96,108 104,113 114,102" stroke="rgba(96,165,250,0.9)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            <circle cx="114" cy="102" r="2" fill="rgba(96,165,250,1)" />
+            <ellipse cx="100" cy="200" rx="50" ry="8" fill="rgba(37,99,235,0.15)" />
           </svg>
         </div>
 
@@ -141,4 +154,3 @@ export default function AppShell({
     </div>
   )
 }
-
