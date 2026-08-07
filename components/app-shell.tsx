@@ -1,4 +1,4 @@
-﻿'use client'
+﻿"use client"
 import Link from 'next/link'
 import LogoutButton from './logout-button'
 
@@ -45,8 +45,13 @@ export default function AppShell({
           style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px)', backgroundSize: '18px 18px' }}
         />
 
-        <div className="relative px-6 py-4 flex justify-center">
-          <img src="/logo-simponik-mark.png" alt="SIMPONIK" className="h-10 w-auto max-w-\[160px\]" style={{ filter: 'brightness(0) invert(1)' }} />
+        {/* Logo */}
+        <div className="relative px-5 pt-6 pb-4 flex items-center justify-center">
+          <img
+            src="/logo-simponik-mark.png"
+            alt="SIMPONIK"
+            style={{ filter: 'brightness(0) invert(1)', height: '48px', width: 'auto', maxWidth: '180px', objectFit: 'contain' }}
+          />
         </div>
 
         <nav className="relative px-4 py-2 space-y-2">
