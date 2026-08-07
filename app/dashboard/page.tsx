@@ -12,9 +12,33 @@ function currentMonth() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
 }
 
-function StatTile({ label, value, sub, accent, barColor, icon }: { label: string; value: string; sub?: string; accent: string; barColor: string; icon: React.ReactNode }) {
+function SeksiIcon({ kode }: { kode: string }) {
+  const common = { className: 'w-5 h-5', fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor', strokeWidth: 2 } as const
+  if (kode === 'TU') return <svg {...common}><path strokeLinecap="round" strokeLinejoin="round" d="M3 7h5l2 3h11v9H3V7z" /></svg>
+  if (kode === 'TIKKIM') return <svg {...common}><path strokeLinecap="round" strokeLinejoin="round" d="M9 17V7a2 2 0 012-2h6a2 2 0 012 2v10M5 21h14M9 21v-4M15 21v-4" /></svg>
+  if (kode === 'INTELDAKIM') return <svg {...common}><path strokeLinecap="round" strokeLinejoin="round" d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" /></svg>
+  return <svg {...common}><path strokeLinecap="round" strokeLinejoin="round" d="M5 5h14a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zm3 4a2 2 0 100 4 2 2 0 000-4zm0 0v6m6-4h4m-4 4h4" /></svg>
+}
+
+function CircularProgress({ pct }: { pct: number }) {
+  const r = 42
+  const c = 2 * Math.PI * r
+  const offset = c - (Math.min(pct, 100) / 100) * c
   return (
-    <div className="card-modern card-accent-top p-5" style={{ ['--accent-color' as string]: barColor }}>
+    <svg width="96" height="96" viewBox="0 0 96 96" className="shrink-0">
+      <circle cx="48" cy="48" r={r} fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="8" />
+      <circle
+        cx="48" cy="48" r={r} fill="none" stroke="#f4b62a" strokeWidth="8"
+        strokeDasharray={c} strokeDashoffset={offset} strokeLinecap="round"
+        transform="rotate(-90 48 48)"
+      />
+    </svg>
+  )
+}
+
+function StatTile({ label, value, sub, accent, icon }: { label: string; value: string; sub?: string; accent: string; icon: React.ReactNode }) {
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
       <div className="flex items-start justify-between">
         <div>
           <p className="text-xs font-medium text-slate-500">{label}</p>
@@ -29,7 +53,6 @@ function StatTile({ label, value, sub, accent, barColor, icon }: { label: string
   )
 }
 
-const IconChart = <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M7 13l3-3 3 3 4-6M4 19h16" /></svg>
 const IconCheck = <svg className="w-5 h-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
 const IconAlert = <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>
 const IconList = <svg className="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h7" /></svg>
@@ -79,53 +102,68 @@ export default async function DashboardPage({
   return (
     <AppShell nama={nama} role={role} active="/dashboard" title="Dashboard">
       <div className="w-full space-y-6">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div className="card-modern glow-navy p-6 flex-1 min-w-[260px]">
-            <p className="text-sm text-slate-500">Selamat datang,</p>
-            <p className="text-2xl font-bold text-slate-900 mt-1">{nama}</p>
-            <div className="flex flex-wrap gap-2 mt-3">
-              <span className="inline-flex rounded-full bg-blue-50 text-blue-700 px-3 py-1 text-xs font-medium border border-blue-100">
-                {role === 'admin' ? 'Administrator' : role === 'monitor' ? 'Kepala Kantor' : 'Pegawai'}
-              </span>
-              {seksiNama && (
-                <span className="inline-flex rounded-full bg-slate-100 text-slate-700 px-3 py-1 text-xs font-medium border border-slate-200">
-                  {seksiNama}
-                </span>
-              )}
+        {/* Banner sambutan dengan foto kantor */}
+        <div className="relative overflow-hidden rounded-2xl bg-white border border-slate-200 shadow-sm">
+          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 px-6 py-6">
+            <div>
+              <h2 className="text-xl font-bold text-slate-900">Selamat datang, {nama}! 👋</h2>
+              <p className="text-sm text-slate-500 mt-1 max-w-md">
+                Berikut ringkasan capaian kinerja Kantor Imigrasi Kelas II TPI Tanjung Balai Karimun.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
+              <label className="block text-xs font-medium text-slate-500 mb-1">Periode</label>
+              <PeriodeFilter periode={periodeBulan} />
             </div>
           </div>
-          <div className="card-modern p-4">
-            <label className="block text-xs font-medium text-slate-500 mb-1">Periode s.d. bulan</label>
-            <PeriodeFilter periode={periodeBulan} />
+          <img
+            src="/kantor.jpg"
+            alt=""
+            className="hidden lg:block absolute top-0 right-0 h-full w-80 object-cover opacity-20"
+            style={{ maskImage: 'linear-gradient(to left, black 40%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to left, black 40%, transparent 100%)' }}
+          />
+        </div>
+
+        {/* Kartu statistik */}
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-2xl p-5 text-white flex items-center justify-between" style={{ backgroundColor: '#16234f' }}>
+            <div>
+              <p className="text-xs font-medium text-white/70">Rata-rata Capaian Kantor</p>
+              <p className="text-4xl font-extrabold mt-1.5">{rataKantor}%</p>
+              <p className="text-xs text-white/50 mt-1">dari target keseluruhan</p>
+            </div>
+            <CircularProgress pct={rataKantor} />
           </div>
+          <StatTile label="Indikator Tercapai" value={`${tercapai}`} sub={`dari ${totalIndikator} indikator`} accent="text-emerald-600" icon={IconCheck} />
+          <StatTile label="Perlu Perhatian" value={`${perluPerhatian}`} sub="capaian < 50%" accent="text-amber-600" icon={IconAlert} />
+          <StatTile label="Total Indikator" value={`${totalIndikator}`} sub="indikator aktif" accent="text-slate-700" icon={IconList} />
         </div>
 
-        <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-          <StatTile label="Rata-rata capaian kantor" value={`${rataKantor}%`} accent="text-blue-600" barColor="#1e3a6b" icon={IconChart} />
-          <StatTile label="Indikator tercapai" value={`${tercapai}`} sub={`dari ${totalIndikator}`} accent="text-emerald-600" barColor="#059669" icon={IconCheck} />
-          <StatTile label="Perlu perhatian" value={`${perluPerhatian}`} sub="capaian < 50%" accent="text-amber-600" barColor="#f4b62a" icon={IconAlert} />
-          <StatTile label="Total indikator" value={`${totalIndikator}`} accent="text-slate-700" barColor="#64748b" icon={IconList} />
-        </div>
-
-        <section className="card-modern overflow-hidden">
+        {/* Capaian per seksi */}
+        <section className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
           <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-            <h2 className="text-base font-semibold text-slate-900">Capaian per seksi</h2>
+            <h2 className="text-base font-semibold text-slate-900">Capaian per Seksi</h2>
             <span className="text-xs text-slate-400">s.d. {bulanLabel}</span>
           </div>
           <ul className="divide-y divide-slate-100">
             {perSeksi.map((s) => (
-              <li key={s.id} className="px-6 py-4">
-                <div className="flex items-center justify-between gap-3 mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-slate-800">{s.nama}</span>
-                    {s.id === seksiId && (
-                      <span className="inline-flex rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 text-[11px] font-medium border border-blue-100">Seksi kamu</span>
-                    )}
-                  </div>
-                  <span className="text-sm font-semibold text-slate-700 tabular-nums">{s.avg}%</span>
+              <li key={s.id} className="px-6 py-4 flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+                  <SeksiIcon kode={s.kode} />
                 </div>
-                <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
-                  <div className={'h-full ' + barColor(s.avg)} style={{ width: `${Math.min(s.avg, 100)}%` }} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-3 mb-1.5">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-medium text-slate-800 truncate">{s.nama}</span>
+                      {s.id === seksiId && (
+                        <span className="inline-flex rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 text-[11px] font-medium border border-blue-100 shrink-0">Seksi kamu</span>
+                      )}
+                    </div>
+                    <span className="text-sm font-semibold text-slate-700 tabular-nums shrink-0">{s.avg}%</span>
+                  </div>
+                  <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
+                    <div className={'h-full ' + barColor(s.avg)} style={{ width: `${Math.min(s.avg, 100)}%` }} />
+                  </div>
                 </div>
               </li>
             ))}
