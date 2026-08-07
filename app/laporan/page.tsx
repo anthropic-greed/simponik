@@ -3,7 +3,8 @@ import AppShell from '@/components/app-shell'
 import { requireProfile } from '@/lib/get-profile'
 import { hitungCapaian } from '@/lib/kinerja'
 import LaporanFilter from './laporan-filter'
-import LaporanForm from './laporan-form'
+import LaporanMasterDetail from './laporan-master-detail'
+import LaporanPdfButton from './laporan-pdf-button'
 
 const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
 const SEKSI_OTOMATIS = ['TU', 'TIKKIM']
@@ -45,7 +46,7 @@ export default async function LaporanPage({
   if (!seksiAktif) {
     return (
       <AppShell nama={nama} role={role} active="/laporan" title="Laporan Kinerja">
-        <div className="bg-white border border-slate-200 rounded-xl p-8 text-slate-500 max-w-2xl">
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 text-slate-500 max-w-2xl">
           Akunmu belum terhubung ke seksi mana pun. Hubungi administrator.
         </div>
       </AppShell>
@@ -87,12 +88,23 @@ export default async function LaporanPage({
   return (
     <AppShell nama={nama} role={role} active="/laporan" title="Laporan Kinerja">
       <div className="w-full space-y-5">
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900">{seksiNamaAktif}</h2>
-          <p className="text-sm text-slate-500">Capaian periode {bulanLabel}</p>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 7h5l2 3h11v9H3V7z" /></svg>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-slate-900">{seksiNamaAktif}</h2>
+              <p className="text-sm text-slate-500">Capaian periode {bulanLabel}</p>
+            </div>
+          </div>
+          <div className="flex items-end gap-3">
+            <LaporanFilter periode={periodeBulan} seksiAktif={seksiAktif} seksiList={seksiList} />
+            <LaporanPdfButton seksiNama={seksiNamaAktif ?? ''} bulanLabel={bulanLabel} items={rows} />
+          </div>
         </div>
-        <LaporanFilter periode={periodeBulan} seksiAktif={seksiAktif} seksiList={seksiList} />
-        <LaporanForm periode={periodeBulan} bulanLabel={bulanLabel} rows={rows} />
+
+        <LaporanMasterDetail periode={periodeBulan} bulanLabel={bulanLabel} seksiNama={seksiNamaAktif ?? ''} rows={rows} />
       </div>
     </AppShell>
   )
