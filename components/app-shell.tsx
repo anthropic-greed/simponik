@@ -45,7 +45,7 @@ export default function AppShell({
         />
 
         <div className="relative px-6 py-7 flex justify-center">
-          <img src="/logo-simponik-mark.png" alt="SIMPONIK" className="h-6 w-auto" />
+          <img src="/logo-simponik-mark.png" alt="SIMPONIK logo mark in corporate blue tones displayed in the sidebar of the dashboard" className="h-50 w-auto" />
         </div>
 
         <nav className="relative px-4 py-2 space-y-2">
