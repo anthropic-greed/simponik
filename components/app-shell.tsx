@@ -46,7 +46,7 @@ export default function AppShell({
         />
 
         <div className="relative px-6 py-4 flex justify-center">
-          <img src="/logo-simponik-mark.png" alt="SIMPONIK" className="h-6 w-auto" style={{ filter: 'brightness(0) invert(1)' }} />
+          <img src="/logo-simponik-mark.png" alt="SIMPONIK" className="h-10 w-auto max-w-\[160px\]" style={{ filter: 'brightness(0) invert(1)' }} />
         </div>
 
         <nav className="relative px-4 py-2 space-y-2">
