@@ -92,7 +92,7 @@ export default async function LaporanPage({
           <p className="text-sm text-slate-500">Capaian periode {bulanLabel}</p>
         </div>
         <LaporanFilter periode={periodeBulan} seksiAktif={seksiAktif} seksiList={seksiList} />
-        <LaporanForm periode={periodeBulan} rows={rows} />
+        <LaporanForm periode={periodeBulan} bulanLabel={bulanLabel} rows={rows} />
       </div>
     </AppShell>
   )

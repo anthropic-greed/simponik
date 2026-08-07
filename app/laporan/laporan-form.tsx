@@ -54,7 +54,26 @@ function Toast({ ok, text, onClose }: { ok: boolean; text: string; onClose: () =
   )
 }
 
-export default function LaporanForm({ periode, rows }: { periode: string; rows: Baris[] }) {
+function ReminderBanner({ belum, total, bulanLabel }: { belum: number; total: number; bulanLabel: string }) {
+  if (belum === 0 || total === 0) return null
+  return (
+    <div className="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3.5">
+      <div className="shrink-0 w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+        <svg className="w-4 h-4 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+        </svg>
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-amber-800">Pengingat pelaporan {bulanLabel}</p>
+        <p className="text-sm text-amber-700 mt-0.5">
+          Masih ada <b>{belum} dari {total}</b> indikator yang belum dilaporkan bulan ini. Segera lengkapi capaian di bawah.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default function LaporanForm({ periode, bulanLabel, rows }: { periode: string; bulanLabel: string; rows: Baris[] }) {
   const router = useRouter()
   const [toast, setToast] = useState<{ ok: boolean; text: string } | null>(null)
   const [loading, setLoading] = useState(false)
@@ -63,6 +82,9 @@ export default function LaporanForm({ periode, rows }: { periode: string; rows: 
   const rowsOtomatisPerluKonfirmasi = rows.filter((r) => r.isTahunan && r.needsInput)
   const rowsManual = rows.filter((r) => !r.isTahunan)
   const adaInput = rowsManual.length > 0 || rowsOtomatisPerluKonfirmasi.length > 0
+
+  const rowsPerluDiisi = [...rowsManual, ...rowsOtomatisPerluKonfirmasi]
+  const belumLapor = rowsPerluDiisi.filter((r) => r.current === null).length
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -83,121 +105,32 @@ export default function LaporanForm({ periode, rows }: { periode: string; rows: 
 
   return (
     <>
-      <form onSubmit={onSubmit} className="space-y-5">
-        <input type="hidden" name="periode" value={periode} />
+      <div className="space-y-5">
+        <ReminderBanner belum={belumLapor} total={rowsPerluDiisi.length} bulanLabel={bulanLabel} />
 
-        {rowsOtomatisTanpaInput.length > 0 && (
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-            <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
-              <p className="text-sm font-semibold text-slate-700">Layanan berjalan otomatis</p>
-              <p className="text-xs text-slate-400 mt-0.5">Progres naik sendiri mengikuti bulan berjalan. Wajib dikonfirmasi manual di bulan Desember.</p>
-            </div>
-            <table className="w-full text-sm">
-              <tbody className="divide-y divide-slate-100">
-                {rowsOtomatisTanpaInput.map((r) => {
-                  const barColor = r.pct >= 100 ? 'bg-emerald-500' : r.pct >= 50 ? 'bg-blue-500' : 'bg-amber-500'
-                  return (
-                    <tr key={r.indikatorId}>
-                      <td className="px-4 py-3 min-w-[220px]">
-                        <p className="font-medium text-slate-800">{r.nama}</p>
-                        <p className="text-xs text-slate-400 mt-0.5">{r.kode}</p>
-                      </td>
-                      <td className="px-4 py-3 text-right text-slate-600 whitespace-nowrap tabular-nums">
-                        Bulan ke-{r.cumulative} dari 12
-                      </td>
-                      <td className="px-4 py-3 w-56">
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden">
-                            <div className={`h-full ${barColor}`} style={{ width: `${Math.min(r.pct, 100)}%` }} />
-                          </div>
-                          <span className="text-xs font-medium text-slate-600 w-10 text-right tabular-nums">{r.pct}%</span>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <form onSubmit={onSubmit} className="space-y-5">
+          <input type="hidden" name="periode" value={periode} />
 
-        {rowsOtomatisPerluKonfirmasi.length > 0 && (
-          <div className="bg-amber-50 border border-amber-200 rounded-xl shadow-sm overflow-hidden">
-            <div className="px-4 py-3 border-b border-amber-200">
-              <p className="text-sm font-semibold text-amber-800">Perlu konfirmasi akhir tahun</p>
-              <p className="text-xs text-amber-700 mt-0.5">Isi angka (misal 1) untuk menandai layanan ini tuntas 100% di bulan Desember.</p>
-            </div>
-            <table className="w-full text-sm">
-              <tbody className="divide-y divide-amber-100">
-                {rowsOtomatisPerluKonfirmasi.map((r) => {
-                  const barColor = 'bg-amber-500'
-                  return (
-                    <tr key={r.indikatorId}>
-                      <td className="px-4 py-3 min-w-[220px]">
-                        <p className="font-medium text-slate-800">{r.nama}</p>
-                        <p className="text-xs text-slate-400 mt-0.5">{r.kode}</p>
-                      </td>
-                      <td className="px-4 py-3">
-                        <input
-                          name={`realisasi_${r.indikatorId}`}
-                          type="number" min={0} step="any"
-                          defaultValue={r.current ?? ''}
-                          placeholder="1"
-                          className="w-24 rounded-lg border border-amber-300 px-2 py-1.5 text-right tabular-nums focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                        />
-                      </td>
-                      <td className="px-4 py-3 w-56">
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 h-2 rounded-full bg-amber-100 overflow-hidden">
-                            <div className={`h-full ${barColor}`} style={{ width: `${Math.min(r.pct, 100)}%` }} />
-                          </div>
-                          <span className="text-xs font-medium text-amber-700 w-10 text-right tabular-nums">{r.pct}%</span>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {rowsManual.length > 0 && (
-          <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-            <div className="overflow-x-auto">
+          {rowsOtomatisTanpaInput.length > 0 && (
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+              <div className="px-4 py-3 border-b border-slate-100 bg-slate-50">
+                <p className="text-sm font-semibold text-slate-700">Layanan berjalan otomatis</p>
+                <p className="text-xs text-slate-400 mt-0.5">Progres naik sendiri mengikuti bulan berjalan. Wajib dikonfirmasi manual di bulan Desember.</p>
+              </div>
               <table className="w-full text-sm">
-                <thead className="bg-slate-50 text-slate-500">
-                  <tr>
-                    <th className="text-left font-medium px-4 py-3 min-w-[220px]">Indikator</th>
-                    <th className="text-right font-medium px-4 py-3">Target setahun</th>
-                    <th className="text-left font-medium px-4 py-3">Capaian bulan ini</th>
-                    <th className="text-right font-medium px-4 py-3">Total s.d. bulan ini</th>
-                    <th className="text-left font-medium px-4 py-3 min-w-[160px]">Capaian thd target</th>
-                  </tr>
-                </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {rowsManual.map((r) => {
+                  {rowsOtomatisTanpaInput.map((r) => {
                     const barColor = r.pct >= 100 ? 'bg-emerald-500' : r.pct >= 50 ? 'bg-blue-500' : 'bg-amber-500'
                     return (
-                      <tr key={r.indikatorId} className="align-top">
-                        <td className="px-4 py-3">
+                      <tr key={r.indikatorId}>
+                        <td className="px-4 py-3 min-w-[220px]">
                           <p className="font-medium text-slate-800">{r.nama}</p>
                           <p className="text-xs text-slate-400 mt-0.5">{r.kode}</p>
                         </td>
                         <td className="px-4 py-3 text-right text-slate-600 whitespace-nowrap tabular-nums">
-                          {fmt(r.target)} <span className="text-slate-400">{r.satuan}</span>
+                          Bulan ke-{r.cumulative} dari 12
                         </td>
-                        <td className="px-4 py-3">
-                          <input
-                            name={`realisasi_${r.indikatorId}`}
-                            type="number" min={0} step="any"
-                            defaultValue={r.current ?? ''}
-                            placeholder="0"
-                            className="w-28 rounded-lg border border-slate-300 px-2 py-1.5 text-right tabular-nums focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          />
-                        </td>
-                        <td className="px-4 py-3 text-right text-slate-700 whitespace-nowrap tabular-nums">{fmt(r.cumulative)}</td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3 w-56">
                           <div className="flex items-center gap-2">
                             <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden">
                               <div className={`h-full ${barColor}`} style={{ width: `${Math.min(r.pct, 100)}%` }} />
@@ -211,21 +144,118 @@ export default function LaporanForm({ periode, rows }: { periode: string; rows: 
                 </tbody>
               </table>
             </div>
-          </div>
-        )}
+          )}
 
-        {adaInput && (
-          <div className="flex items-center justify-between gap-3 bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-sm">
-            {toast
-              ? <p className={`text-sm ${toast.ok ? 'text-emerald-700' : 'text-red-600'}`}>{toast.text}</p>
-              : <span className="text-xs text-slate-400">Isi capaian bulan ini lalu simpan. Kolom kosong tidak diubah.</span>}
-            <button type="submit" disabled={loading}
-              className="rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-medium px-4 py-2 text-sm transition whitespace-nowrap">
-              {loading ? 'Menyimpan…' : 'Simpan capaian'}
-            </button>
-          </div>
-        )}
-      </form>
+          {rowsOtomatisPerluKonfirmasi.length > 0 && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl shadow-sm overflow-hidden">
+              <div className="px-4 py-3 border-b border-amber-200">
+                <p className="text-sm font-semibold text-amber-800">Perlu konfirmasi akhir tahun</p>
+                <p className="text-xs text-amber-700 mt-0.5">Isi angka (misal 1) untuk menandai layanan ini tuntas 100% di bulan Desember.</p>
+              </div>
+              <table className="w-full text-sm">
+                <tbody className="divide-y divide-amber-100">
+                  {rowsOtomatisPerluKonfirmasi.map((r) => {
+                    const barColor = 'bg-amber-500'
+                    return (
+                      <tr key={r.indikatorId}>
+                        <td className="px-4 py-3 min-w-[220px]">
+                          <p className="font-medium text-slate-800">{r.nama}</p>
+                          <p className="text-xs text-slate-400 mt-0.5">{r.kode}</p>
+                        </td>
+                        <td className="px-4 py-3">
+                          <input
+                            name={`realisasi_${r.indikatorId}`}
+                            type="number" min={0} step="any"
+                            defaultValue={r.current ?? ''}
+                            placeholder="1"
+                            className="w-24 rounded-lg border border-amber-300 px-2 py-1.5 text-right tabular-nums focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                          />
+                        </td>
+                        <td className="px-4 py-3 w-56">
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 h-2 rounded-full bg-amber-100 overflow-hidden">
+                              <div className={`h-full ${barColor}`} style={{ width: `${Math.min(r.pct, 100)}%` }} />
+                            </div>
+                            <span className="text-xs font-medium text-amber-700 w-10 text-right tabular-nums">{r.pct}%</span>
+                          </div>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {rowsManual.length > 0 && (
+            <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-50 text-slate-500">
+                    <tr>
+                      <th className="text-left font-medium px-4 py-3 min-w-[220px]">Indikator</th>
+                      <th className="text-right font-medium px-4 py-3">Target setahun</th>
+                      <th className="text-left font-medium px-4 py-3">Capaian bulan ini</th>
+                      <th className="text-right font-medium px-4 py-3">Total s.d. bulan ini</th>
+                      <th className="text-left font-medium px-4 py-3 min-w-[160px]">Capaian thd target</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {rowsManual.map((r) => {
+                      const barColor = r.pct >= 100 ? 'bg-emerald-500' : r.pct >= 50 ? 'bg-blue-500' : 'bg-amber-500'
+                      const belum = r.current === null
+                      return (
+                        <tr key={r.indikatorId} className={'align-top ' + (belum ? 'bg-amber-50/40' : '')}>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium text-slate-800">{r.nama}</p>
+                              {belum && <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" title="Belum dilaporkan bulan ini" />}
+                            </div>
+                            <p className="text-xs text-slate-400 mt-0.5">{r.kode}</p>
+                          </td>
+                          <td className="px-4 py-3 text-right text-slate-600 whitespace-nowrap tabular-nums">
+                            {fmt(r.target)} <span className="text-slate-400">{r.satuan}</span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <input
+                              name={`realisasi_${r.indikatorId}`}
+                              type="number" min={0} step="any"
+                              defaultValue={r.current ?? ''}
+                              placeholder="0"
+                              className="w-28 rounded-lg border border-slate-300 px-2 py-1.5 text-right tabular-nums focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            />
+                          </td>
+                          <td className="px-4 py-3 text-right text-slate-700 whitespace-nowrap tabular-nums">{fmt(r.cumulative)}</td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-2">
+                              <div className="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden">
+                                <div className={`h-full ${barColor}`} style={{ width: `${Math.min(r.pct, 100)}%` }} />
+                              </div>
+                              <span className="text-xs font-medium text-slate-600 w-10 text-right tabular-nums">{r.pct}%</span>
+                            </div>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {adaInput && (
+            <div className="flex items-center justify-between gap-3 bg-white border border-slate-200 rounded-xl px-4 py-3 shadow-sm">
+              {toast
+                ? <p className={`text-sm ${toast.ok ? 'text-emerald-700' : 'text-red-600'}`}>{toast.text}</p>
+                : <span className="text-xs text-slate-400">Isi capaian bulan ini lalu simpan. Kolom kosong tidak diubah.</span>}
+              <button type="submit" disabled={loading}
+                className="rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-medium px-4 py-2 text-sm transition whitespace-nowrap">
+                {loading ? 'Menyimpan…' : 'Simpan capaian'}
+              </button>
+            </div>
+          )}
+        </form>
+      </div>
 
       {toast && <Toast ok={toast.ok} text={toast.text} onClose={() => setToast(null)} />}
     </>
