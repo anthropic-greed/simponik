@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -20,18 +20,10 @@ export default function LoginPage() {
     router.push('/dashboard'); router.refresh()
   }
 
-  const teeth = 18
-  const pts = Array.from({ length: teeth + 1 }, (_, i) => {
-    const y = (i / teeth) * 100
-    const x = i % 2 === 0 ? 100 : 84
-    return `${x}% ${y}%`
-  })
-  const clipPath = `polygon(0% 0%, ${pts.join(', ')}, 0% 100%)`
-
   return (
-    <div className="min-h-screen bg-slate-200 flex items-center justify-center p-4 sm:p-8">
-      <div className="relative w-full max-w-4xl min-h-[600px] rounded-[2rem] overflow-hidden shadow-2xl">
-        {/* Foto kantor, latar penuh */}
+    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white">
+      {/* Panel kiri: foto + lengkung organik */}
+      <div className="relative w-full lg:w-[52%] min-h-[35vh] lg:min-h-screen overflow-hidden">
         <img
           src="/kantor.jpg"
           alt="Kantor Imigrasi Kelas II TPI Tanjung Balai Karimun"
@@ -39,52 +31,60 @@ export default function LoginPage() {
         />
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(180deg, rgba(15,25,50,0.05) 0%, rgba(15,25,50,0.65) 100%)' }}
+          style={{ background: 'linear-gradient(180deg, rgba(15,25,50,0.10) 0%, rgba(15,25,50,0.55) 100%)' }}
         />
 
-        {/* Judul besar pojok kanan bawah */}
-        <div className="absolute bottom-8 right-8 sm:bottom-12 sm:right-12 text-right text-white z-10">
-          <h2 className="text-4xl sm:text-6xl font-black tracking-tight leading-none">SIMPONIK</h2>
-          <p className="text-sm sm:text-base font-medium text-white/85 mt-2 tracking-wide">
-            SISTEM INFORMASI PELAPORAN KINERJA
-          </p>
-        </div>
-
-        {/* Panel putih bertepi robek */}
-        <div
-          className="absolute inset-y-0 left-0 w-full sm:w-[48%] bg-white flex flex-col justify-center px-8 sm:px-12 py-12"
-          style={{ clipPath }}
+        {/* Lapisan SVG putih membentuk tepi organik, TIDAK memotong panel form */}
+        <svg
+          className="hidden lg:block absolute top-0 right-0 h-full w-24"
+          viewBox="0 0 100 800"
+          preserveAspectRatio="none"
         >
-          <img src="/logo-simponik.png" alt="SIMPONIK" className="h-10 w-auto mb-8" />
+          <path
+            d="M100,0
+               C 60,40 90,90 55,140
+               C 20,190 85,230 60,280
+               C 35,330 95,370 65,420
+               C 35,470 90,510 55,560
+               C 20,610 85,650 60,700
+               C 40,730 90,760 100,800
+               L 100,0 Z"
+            fill="white"
+          />
+        </svg>
 
-          <h1 className="text-2xl font-bold text-slate-900">Masuk</h1>
-          <p className="text-sm text-slate-500 mt-1 mb-8">
+        <div className="absolute top-10 left-8 sm:left-12 text-white z-10">
+          <p className="text-xs sm:text-sm font-semibold tracking-[0.3em]">SELAMAT DATANG</p>
+        </div>
+      </div>
+
+      {/* Panel kanan: form, persegi biasa (tidak dipotong bentuk) */}
+      <div className="relative w-full lg:w-[48%] flex flex-col justify-center px-8 sm:px-16 py-12 min-h-[65vh] lg:min-h-screen">
+        <img src="/logo-simponik.png" alt="SIMPONIK" className="h-9 w-auto absolute top-8 right-8 sm:right-12" />
+
+        <div className="max-w-sm w-full mx-auto lg:mx-0">
+          <h1 className="text-3xl font-bold text-slate-900 mb-1">Masuk</h1>
+          <p className="text-sm text-slate-500 mb-10">
             Kantor Imigrasi Kelas II TPI Tanjung Balai Karimun
           </p>
 
-          <form onSubmit={handleLogin} className="space-y-4 max-w-xs">
-            <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </span>
+          <form onSubmit={handleLogin} className="space-y-7">
+            <div>
+              <label className="block text-xs font-medium text-slate-400 mb-1">Email</label>
               <input
                 type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
-                placeholder="Email"
-                className="w-full rounded-full bg-slate-100 border border-slate-200 pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                placeholder="nama@imigrasi.go.id"
+                className="w-full border-0 border-b border-slate-300 bg-transparent px-0 py-2 text-sm focus:outline-none focus:border-blue-600 placeholder:text-slate-300"
               />
             </div>
-            <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 10-8 0v4h8z" />
-                </svg>
-              </span>
+            <div>
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-medium text-slate-400 mb-1">Password</label>
+              </div>
               <input
                 type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
-                placeholder="Password"
-                className="w-full rounded-full bg-slate-100 border border-slate-200 pl-11 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+                placeholder="••••••••"
+                className="w-full border-0 border-b border-slate-300 bg-transparent px-0 py-2 text-sm focus:outline-none focus:border-blue-600 placeholder:text-slate-300"
               />
             </div>
 
@@ -92,14 +92,14 @@ export default function LoginPage() {
 
             <button
               type="submit" disabled={loading}
-              className="rounded-full bg-blue-700 hover:bg-blue-800 disabled:opacity-60 text-white font-bold px-8 py-3 text-sm tracking-wide transition shadow-lg shadow-blue-700/30"
+              className="w-full rounded-full bg-blue-900 hover:bg-blue-950 disabled:opacity-60 text-white font-semibold py-3.5 text-sm transition shadow-lg shadow-blue-900/25"
             >
-              {loading ? 'MEMPROSES…' : 'MASUK'}
+              {loading ? 'Memproses…' : 'Masuk'}
             </button>
           </form>
 
-          <p className="text-xs text-slate-400 mt-8 max-w-xs">
-            Akun didaftarkan oleh administrator.
+          <p className="text-sm text-slate-400 mt-10">
+            Belum punya akun? <span className="text-blue-700 font-semibold">Hubungi administrator</span>
           </p>
         </div>
       </div>
