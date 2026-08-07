@@ -34,11 +34,21 @@ export default function AppShell({
 
   return (
     <div className="min-h-screen flex bg-slate-50">
-      <aside className="hidden md:flex w-64 flex-col text-white shrink-0" style={{ backgroundColor: '#101d38' }}>
-        <div className="px-6 py-6 flex items-center gap-3 border-b border-white/10">
-          <img src="/logo-simponik.png" alt="SIMPONIK" className="h-8 w-auto bg-white rounded-lg px-2 py-1" />
+      <aside
+        className="hidden md:flex w-64 flex-col text-white shrink-0 relative overflow-hidden"
+        style={{ background: 'linear-gradient(160deg, #101d38 0%, #1b2a5c 55%, #26356f 100%)' }}
+      >
+        {/* Pola titik halus */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.15]"
+          style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px)', backgroundSize: '18px 18px' }}
+        />
+
+        <div className="relative px-6 py-7 flex justify-center">
+          <img src="/logo-simponik-mark.png" alt="SIMPONIK" className="h-6 w-auto" />
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-1">
+
+        <nav className="relative px-4 py-2 space-y-2">
           {links.map((l) => {
             const isActive = l.href === active
             return (
@@ -46,31 +56,59 @@ export default function AppShell({
                 key={l.href}
                 href={l.href}
                 className={
-                  'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ' +
-                  (isActive ? 'bg-blue-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white')
+                  'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition ' +
+                  (isActive
+                    ? 'text-white shadow-lg'
+                    : 'text-white/60 hover:text-white hover:bg-white/5')
                 }
+                style={isActive ? { background: 'linear-gradient(90deg, #2563eb, #1e40af)', boxShadow: '0 8px 20px -6px rgba(37,99,235,0.6)' } : undefined}
               >
-                <NavIcon name={l.icon} className="w-4.5 h-4.5 shrink-0" />
+                <span className={'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ' + (isActive ? 'bg-white/15' : 'bg-white/5')}>
+                  <NavIcon name={l.icon} className="w-4 h-4" />
+                </span>
                 {l.label}
               </Link>
             )
           })}
         </nav>
-        <div className="m-3 rounded-2xl p-4" style={{ backgroundColor: '#16234f' }}>
-          <p className="text-sm font-semibold">Kelola Kinerja,</p>
-          <p className="text-sm font-semibold mb-2">Capai Tujuan Bersama</p>
-          <p className="text-xs text-white/60 leading-relaxed">
-            SIMPONIK membantu memantau dan melaporkan kinerja seksi secara terintegrasi.
-          </p>
+
+        {/* Ilustrasi garis bangunan dekoratif */}
+        <div className="relative flex-1 flex items-end justify-center px-6 opacity-40">
+          <svg viewBox="0 0 200 140" className="w-full max-w-[180px]" fill="none" stroke="white" strokeWidth="0.7">
+            <rect x="20" y="60" width="160" height="70" />
+            <line x1="20" y1="80" x2="180" y2="80" />
+            <line x1="20" y1="100" x2="180" y2="100" />
+            <line x1="20" y1="120" x2="180" y2="120" />
+            <line x1="55" y1="60" x2="55" y2="130" />
+            <line x1="90" y1="60" x2="90" y2="130" />
+            <line x1="125" y1="60" x2="125" y2="130" />
+            <line x1="160" y1="60" x2="160" y2="130" />
+            <path d="M20 60 L100 20 L180 60" />
+            <line x1="100" y1="20" x2="100" y2="60" />
+          </svg>
         </div>
+
+        {/* Kartu bawah */}
+        <div className="relative m-3 mb-0 rounded-2xl overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div className="p-5">
+            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center mb-3">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M4 18h16M6 18v-7m4 7v-7m4 7v-7m4 7v-7M4 11l8-6 8 6" />
+              </svg>
+            </div>
+            <p className="text-sm font-bold leading-snug">Kelola Kinerja,<br />Capai Tujuan Bersama</p>
+            <p className="text-xs text-white/50 mt-2 leading-relaxed">
+              SIMPONIK membantu memantau, mengumpulkan, dan melaporkan kinerja secara terintegrasi.
+            </p>
+          </div>
+          <div className="h-1" style={{ background: 'linear-gradient(90deg, transparent, #60a5fa, transparent)' }} />
+        </div>
+        <div className="h-4" />
       </aside>
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className="flex items-center justify-between bg-white border-b border-slate-100 px-6 py-4">
-          <div className="flex items-center gap-2">
-            <NavIcon name="home" className="w-4 h-4 text-slate-400" />
-            <h1 className="text-base font-semibold text-slate-900">{title}</h1>
-          </div>
+          <h1 className="text-base font-semibold text-slate-900">{title}</h1>
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-sm">
               {inisial}
