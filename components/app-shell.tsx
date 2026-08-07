@@ -44,7 +44,7 @@ export default function AppShell({
           style={{ backgroundImage: 'radial-gradient(rgba(255,255,255,0.6) 1px, transparent 1px)', backgroundSize: '18px 18px' }}
         />
 
-        <div className="relative px-6 py-7 flex justify-center">
+        <div className="relative px-6 py-4 flex justify-center">
           <img src="/logo-simponik-mark.png" alt="SIMPONIK logo mark in corporate blue tones displayed in the sidebar of the dashboard" className="h-50 w-auto" />
         </div>
 
