@@ -3,6 +3,7 @@ import { requireProfile } from '@/lib/get-profile'
 import { hitungCapaian } from '@/lib/kinerja'
 import MonitoringFilter from './monitoring-filter'
 import PdfButton from './pdf-button'
+import ApproveButton from './approve-button'
 
 const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
 const SEKSI_OTOMATIS = ['TU', 'TIKKIM']
@@ -25,6 +26,7 @@ export default async function MonitoringPage({
   searchParams: Promise<{ periode?: string }>
 }) {
   const { supabase, nama, role } = await requireProfile()
+  const bisaApprove = role === 'monitor' || role === 'admin'
 
   const sp = await searchParams
   const periodeBulan = /^\d{4}-\d{2}$/.test(sp.periode || '') ? sp.periode! : currentMonth()
@@ -39,7 +41,7 @@ export default async function MonitoringPage({
     .order('kode')
   const { data: laporan } = await supabase
     .from('laporan_kinerja')
-    .select('indikator_id, periode, realisasi')
+    .select('indikator_id, periode, realisasi, status_approval')
     .gte('periode', `${yy}-01-01`)
     .lte('periode', periodeDate)
 
@@ -51,7 +53,8 @@ export default async function MonitoringPage({
         const milik = (laporan ?? []).filter((l) => l.indikator_id === i.id)
         const target = Number(i.target_tahunan)
         const { cumulative, pct, isTahunan } = hitungCapaian(target, milik, periodeBulan, otomatisAktif)
-        return { id: i.id, kode: i.kode, nama: i.nama, satuan: i.satuan, target, cumulative, pct, isTahunan }
+        const statusBulanIni = milik.find((l) => l.periode === periodeDate)?.status_approval ?? 'pending'
+        return { id: i.id, kode: i.kode, nama: i.nama, satuan: i.satuan, target, cumulative, pct, isTahunan, statusBulanIni }
       })
     const avg = items.length ? Math.round(items.reduce((a, it) => a + it.pct, 0) / items.length) : 0
     return { seksi: s, items, avg }
@@ -91,10 +94,11 @@ export default async function MonitoringPage({
                   <table className="w-full text-sm">
                     <thead className="bg-slate-50 text-slate-500">
                       <tr>
-                        <th className="text-left font-medium px-6 py-3 min-w-[240px]">Indikator</th>
+                        <th className="text-left font-medium px-6 py-3 min-w-[220px]">Indikator</th>
                         <th className="text-right font-medium px-4 py-3">Target setahun</th>
                         <th className="text-right font-medium px-4 py-3">Total s.d. bulan</th>
-                        <th className="text-left font-medium px-4 py-3 min-w-[180px]">Capaian</th>
+                        <th className="text-left font-medium px-4 py-3 min-w-[160px]">Capaian</th>
+                        <th className="text-left font-medium px-4 py-3">Status</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -119,6 +123,14 @@ export default async function MonitoringPage({
                                 </div>
                                 <span className="text-xs font-medium text-slate-600 w-10 text-right tabular-nums">{it.pct}%</span>
                               </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <ApproveButton
+                                indikatorId={it.id}
+                                periode={periodeDate}
+                                statusApproval={it.statusBulanIni}
+                                bisaApprove={bisaApprove}
+                              />
                             </td>
                           </tr>
                         )
