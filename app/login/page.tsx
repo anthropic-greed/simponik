@@ -30,10 +30,8 @@ export default function LoginForm() {
         backgroundPosition: 'center',
       }}
     >
-      {/* Overlay gelap */}
       <div className="absolute inset-0 bg-black/50" />
 
-      {/* Card login */}
       <div
         className="relative z-10 w-full max-w-sm mx-4 rounded-2xl px-8 py-10"
         style={{
@@ -44,7 +42,6 @@ export default function LoginForm() {
           boxShadow: '0 25px 60px rgba(0,0,0,0.5)',
         }}
       >
-        {/* Logo & judul */}
         <div className="flex flex-col items-center mb-8">
           <img
             src="/logo-simponik-mark.png"
@@ -56,7 +53,6 @@ export default function LoginForm() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email */}
           <div>
             <input
               type="email"
@@ -74,7 +70,6 @@ export default function LoginForm() {
             />
           </div>
 
-          {/* Password */}
           <div>
             <input
               type="password"
@@ -92,22 +87,18 @@ export default function LoginForm() {
             />
           </div>
 
-          {/* Error */}
           {error && (
             <p className="text-red-400 text-xs text-center bg-red-500/10 rounded-lg px-3 py-2">
               {error}
             </p>
           )}
 
-          {/* Tombol login */}
           <button
             type="submit"
             disabled={loading}
             className="w-full rounded-xl py-3 text-sm font-bold text-white transition disabled:opacity-60 mt-2"
             style={{
-              background: loading
-                ? 'rgba(37,99,235,0.6)'
-                : 'linear-gradient(90deg, #1d4ed8, #2563eb)',
+              background: loading ? 'rgba(37,99,235,0.6)' : 'linear-gradient(90deg, #1d4ed8, #2563eb)',
               boxShadow: '0 4px 20px rgba(37,99,235,0.4)',
             }}
           >
@@ -115,7 +106,6 @@ export default function LoginForm() {
           </button>
         </form>
 
-        {/* Footer */}
         <p className="text-center text-white/30 text-xs mt-6">
           &copy; {new Date().getFullYear()} SIMPONIK — KPP Pratama
         </p>
