@@ -2,15 +2,30 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { simpanLaporan } from './actions'
-import LaporanPdfButton from './laporan-pdf-button'
 
 type Baris = {
   indikatorId: number; kode: string; nama: string; satuan: string
   target: number; current: number | null; cumulative: number; pct: number
-  isTahunan: boolean; needsInput: boolean
+  isTahunan: boolean; needsInput: boolean; statusApproval: string
 }
 
 const fmt = (n: number) => n.toLocaleString('id-ID')
+
+function StatusBadge({ status }: { status: string }) {
+  if (status === 'approved') {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-1 text-xs font-medium shrink-0">
+        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+        Disetujui
+      </span>
+    )
+  }
+  return (
+    <span className="inline-flex items-center rounded-full bg-slate-100 text-slate-500 px-2.5 py-1 text-xs font-medium shrink-0">
+      Menunggu
+    </span>
+  )
+}
 
 function CircularProgress({ pct }: { pct: number }) {
   const r = 30
@@ -62,7 +77,6 @@ export default function LaporanMasterDetail({
 
   return (
     <div className="space-y-5">
-      {/* Kartu ringkasan */}
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
         <div className="bg-blue-50/60 border border-blue-100 rounded-2xl p-5 flex items-center justify-between">
           <div>
@@ -94,7 +108,6 @@ export default function LaporanMasterDetail({
         </div>
       </div>
 
-      {/* Daftar + Detail */}
       <div className="grid gap-4 grid-cols-1 lg:grid-cols-5">
         <div className="lg:col-span-2 bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-slate-100">
@@ -119,6 +132,9 @@ export default function LaporanMasterDetail({
                       </div>
                     </div>
                     <span className="text-xs font-semibold text-slate-500 shrink-0 tabular-nums">{r.pct}%</span>
+                    {r.statusApproval === 'approved' && (
+                      <svg className="w-4 h-4 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                    )}
                     <svg className="w-4 h-4 text-slate-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                   </button>
                 </li>
@@ -130,14 +146,17 @@ export default function LaporanMasterDetail({
         <div className="lg:col-span-3 bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
           {selected && (
             <>
-              <div className="flex items-start gap-3 mb-6">
-                <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6M9 8h1M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z" /></svg>
+              <div className="flex items-start justify-between gap-3 mb-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-11 h-11 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center shrink-0">
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6M9 8h1M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z" /></svg>
+                  </div>
+                  <div>
+                    <p className="text-base font-semibold text-slate-900">{selected.nama}</p>
+                    <p className="text-xs text-slate-400 mt-0.5">{selected.kode}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-base font-semibold text-slate-900">{selected.nama}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">{selected.kode}</p>
-                </div>
+                <StatusBadge status={selected.statusApproval} />
               </div>
 
               {selected.isTahunan && !selected.needsInput ? (
@@ -207,6 +226,13 @@ export default function LaporanMasterDetail({
                     <div className="flex items-start gap-2 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3 mb-5">
                       <svg className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" /></svg>
                       <p className="text-sm text-amber-800">Isi angka (misal 1) untuk menandai layanan ini tuntas 100% di bulan Desember.</p>
+                    </div>
+                  )}
+
+                  {selected.statusApproval === 'approved' && (
+                    <div className="flex items-start gap-2 bg-emerald-50 border border-emerald-100 rounded-xl px-4 py-3 mb-5">
+                      <svg className="w-4 h-4 text-emerald-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      <p className="text-sm text-emerald-800">Capaian ini sudah disetujui oleh Kepala Kantor. Mengubah angka akan membatalkan persetujuan.</p>
                     </div>
                   )}
 

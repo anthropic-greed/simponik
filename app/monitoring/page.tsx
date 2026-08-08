@@ -130,6 +130,7 @@ export default async function MonitoringPage({
                             </td>
                             <td className="px-4 py-3">
                               <ApproveButton
+                                key={`${it.id}-${periodeDate}`}
                                 indikatorId={it.id}
                                 periode={periodeDate}
                                 statusApproval={it.statusBulanIni}

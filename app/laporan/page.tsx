@@ -63,15 +63,16 @@ export default async function LaporanPage({
   const { data: laporan } = ids.length
     ? await supabase
         .from('laporan_kinerja')
-        .select('indikator_id, periode, realisasi')
+        .select('indikator_id, periode, realisasi, status_approval, approved_at')
         .in('indikator_id', ids)
         .gte('periode', `${yy}-01-01`)
         .lte('periode', periodeDate)
-    : { data: [] as { indikator_id: number; periode: string; realisasi: number }[] }
+    : { data: [] as { indikator_id: number; periode: string; realisasi: number; status_approval: string; approved_at: string | null }[] }
 
   const rows = (indikator ?? []).map((i) => {
     const milik = (laporan ?? []).filter((l) => l.indikator_id === i.id)
     const current = milik.find((l) => l.periode === periodeDate)?.realisasi
+    const laporanBulanIni = milik.find((l) => l.periode === periodeDate)
     const target = Number(i.target_tahunan)
     const { cumulative, pct, isTahunan, needsInput } = hitungCapaian(target, milik, periodeBulan, otomatisAktif)
     return {
@@ -82,6 +83,7 @@ export default async function LaporanPage({
       pct,
       isTahunan,
       needsInput,
+      statusApproval: laporanBulanIni?.status_approval ?? 'pending',
     }
   })
 
