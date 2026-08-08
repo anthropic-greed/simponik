@@ -41,7 +41,7 @@ export default async function MonitoringPage({
     .order('kode')
   const { data: laporan } = await supabase
     .from('laporan_kinerja')
-    .select('indikator_id, periode, realisasi, status_approval')
+    .select('indikator_id, periode, realisasi, status_approval, approved_at')
     .gte('periode', `${yy}-01-01`)
     .lte('periode', periodeDate)
 
@@ -53,8 +53,12 @@ export default async function MonitoringPage({
         const milik = (laporan ?? []).filter((l) => l.indikator_id === i.id)
         const target = Number(i.target_tahunan)
         const { cumulative, pct, isTahunan } = hitungCapaian(target, milik, periodeBulan, otomatisAktif)
-        const statusBulanIni = milik.find((l) => l.periode === periodeDate)?.status_approval ?? 'pending'
-        return { id: i.id, kode: i.kode, nama: i.nama, satuan: i.satuan, target, cumulative, pct, isTahunan, statusBulanIni }
+        const laporanBulanIni = milik.find((l) => l.periode === periodeDate)
+        return {
+          id: i.id, kode: i.kode, nama: i.nama, satuan: i.satuan, target, cumulative, pct, isTahunan,
+          statusBulanIni: laporanBulanIni?.status_approval ?? 'pending',
+          approvedAtBulanIni: laporanBulanIni?.approved_at ?? null,
+        }
       })
     const avg = items.length ? Math.round(items.reduce((a, it) => a + it.pct, 0) / items.length) : 0
     return { seksi: s, items, avg }
@@ -98,7 +102,7 @@ export default async function MonitoringPage({
                         <th className="text-right font-medium px-4 py-3">Target setahun</th>
                         <th className="text-right font-medium px-4 py-3">Total s.d. bulan</th>
                         <th className="text-left font-medium px-4 py-3 min-w-[160px]">Capaian</th>
-                        <th className="text-left font-medium px-4 py-3">Status</th>
+                        <th className="text-left font-medium px-4 py-3 min-w-[130px]">Status</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -129,6 +133,7 @@ export default async function MonitoringPage({
                                 indikatorId={it.id}
                                 periode={periodeDate}
                                 statusApproval={it.statusBulanIni}
+                                approvedAt={it.approvedAtBulanIni}
                                 bisaApprove={bisaApprove}
                               />
                             </td>
