@@ -1,107 +1,124 @@
-"use client"
-
+﻿'use client'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
 
-export default function LoginPage() {
+export default function LoginForm() {
   const router = useRouter()
-  const supabase = createClient()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  async function handleLogin(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true); setError('')
+    setLoading(true)
+    setError(null)
+    const supabase = createClient()
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) { setError('Email atau password salah.'); setLoading(false); return }
-    router.push('/dashboard'); router.refresh()
+    setLoading(false)
+    if (error) setError('Email atau kata sandi salah.')
+    else router.push('/dashboard')
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white">
-      {/* Panel kiri: foto + lengkung organik */}
-      <div className="relative w-full lg:w-[52%] min-h-[35vh] lg:min-h-screen overflow-hidden">
-        <img
-          src="/kantor.jpg"
-          alt="Kantor Imigrasi Kelas II TPI Tanjung Balai Karimun"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div
-          className="absolute inset-0"
-          style={{ background: 'linear-gradient(180deg, rgba(15,25,50,0.10) 0%, rgba(15,25,50,0.55) 100%)' }}
-        />
+    <div
+      className="min-h-screen flex items-center justify-center relative"
+      style={{
+        backgroundImage: "url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1600&q=80')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
+    >
+      {/* Overlay gelap */}
+      <div className="absolute inset-0 bg-black/50" />
 
-        {/* Lapisan SVG putih membentuk tepi organik, TIDAK memotong panel form */}
-        <svg
-          className="hidden lg:block absolute top-0 right-0 h-full w-24"
-          viewBox="0 0 100 800"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M100,0
-               C 60,40 90,90 55,140
-               C 20,190 85,230 60,280
-               C 35,330 95,370 65,420
-               C 35,470 90,510 55,560
-               C 20,610 85,650 60,700
-               C 40,730 90,760 100,800
-               L 100,0 Z"
-            fill="white"
+      {/* Card login */}
+      <div
+        className="relative z-10 w-full max-w-sm mx-4 rounded-2xl px-8 py-10"
+        style={{
+          background: 'rgba(15, 25, 50, 0.65)',
+          backdropFilter: 'blur(18px)',
+          WebkitBackdropFilter: 'blur(18px)',
+          border: '1px solid rgba(255,255,255,0.12)',
+          boxShadow: '0 25px 60px rgba(0,0,0,0.5)',
+        }}
+      >
+        {/* Logo & judul */}
+        <div className="flex flex-col items-center mb-8">
+          <img
+            src="/logo-simponik-mark.png"
+            alt="SIMPONIK"
+            style={{ filter: 'brightness(0) invert(1)', height: '36px', width: 'auto', marginBottom: '16px' }}
           />
-        </svg>
-
-        <div className="absolute top-10 left-8 sm:left-12 text-white z-10">
-          <p className="text-xs sm:text-sm font-semibold tracking-[0.3em]">SELAMAT DATANG</p>
+          <h1 className="text-white text-xl font-bold tracking-wide">Masuk ke SIMPONIK</h1>
+          <p className="text-white/45 text-xs mt-1">Sistem Monitoring & Pelaporan Kinerja</p>
         </div>
-      </div>
 
-      {/* Panel kanan: form, persegi biasa (tidak dipotong bentuk) */}
-      <div className="relative w-full lg:w-[48%] flex flex-col justify-center px-8 sm:px-16 py-12 min-h-[65vh] lg:min-h-screen">
-        <img src="/logo-simponik.png" alt="SIMPONIK" className="h-9 w-auto absolute top-8 right-8 sm:right-12" />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Email */}
+          <div>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              required
+              className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/40 outline-none transition"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.15)',
+              }}
+              onFocus={e => e.currentTarget.style.border = '1px solid rgba(96,165,250,0.7)'}
+              onBlur={e => e.currentTarget.style.border = '1px solid rgba(255,255,255,0.15)'}
+            />
+          </div>
 
-        <div className="max-w-sm w-full mx-auto lg:mx-0">
-          <h1 className="text-3xl font-bold text-slate-900 mb-1">Masuk</h1>
-          <p className="text-sm text-slate-500 mb-10">
-            Kantor Imigrasi Kelas II TPI Tanjung Balai Karimun
-          </p>
+          {/* Password */}
+          <div>
+            <input
+              type="password"
+              placeholder="Kata sandi"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/40 outline-none transition"
+              style={{
+                background: 'rgba(255,255,255,0.08)',
+                border: '1px solid rgba(255,255,255,0.15)',
+              }}
+              onFocus={e => e.currentTarget.style.border = '1px solid rgba(96,165,250,0.7)'}
+              onBlur={e => e.currentTarget.style.border = '1px solid rgba(255,255,255,0.15)'}
+            />
+          </div>
 
-          <form onSubmit={handleLogin} className="space-y-7">
-            <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1">Email</label>
-              <input
-                type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
-                placeholder="nama@imigrasi.go.id"
-                className="w-full border-0 border-b border-slate-300 bg-transparent px-0 py-2 text-sm focus:outline-none focus:border-blue-600 placeholder:text-slate-300"
-              />
-            </div>
-            <div>
-              <div className="flex items-center justify-between">
-                <label className="block text-xs font-medium text-slate-400 mb-1">Password</label>
-              </div>
-              <input
-                type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
-                placeholder="••••••••"
-                className="w-full border-0 border-b border-slate-300 bg-transparent px-0 py-2 text-sm focus:outline-none focus:border-blue-600 placeholder:text-slate-300"
-              />
-            </div>
+          {/* Error */}
+          {error && (
+            <p className="text-red-400 text-xs text-center bg-red-500/10 rounded-lg px-3 py-2">
+              {error}
+            </p>
+          )}
 
-            {error && <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-xl px-4 py-2.5">{error}</p>}
+          {/* Tombol login */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-xl py-3 text-sm font-bold text-white transition disabled:opacity-60 mt-2"
+            style={{
+              background: loading
+                ? 'rgba(37,99,235,0.6)'
+                : 'linear-gradient(90deg, #1d4ed8, #2563eb)',
+              boxShadow: '0 4px 20px rgba(37,99,235,0.4)',
+            }}
+          >
+            {loading ? 'Memuat…' : 'Masuk'}
+          </button>
+        </form>
 
-            <button
-              type="submit" disabled={loading}
-              className="w-full rounded-full bg-blue-900 hover:bg-blue-950 disabled:opacity-60 text-white font-semibold py-3.5 text-sm transition shadow-lg shadow-blue-900/25"
-            >
-              {loading ? 'Memproses…' : 'Masuk'}
-            </button>
-          </form>
-
-          <p className="text-sm text-slate-400 mt-10">
-            Belum punya akun? <span className="text-blue-700 font-semibold">Hubungi administrator</span>
-          </p>
-        </div>
+        {/* Footer */}
+        <p className="text-center text-white/30 text-xs mt-6">
+          &copy; {new Date().getFullYear()} SIMPONIK — KPP Pratama
+        </p>
       </div>
     </div>
   )
