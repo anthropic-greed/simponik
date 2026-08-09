@@ -1,113 +1,71 @@
 ﻿'use client'
-import { useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 
-export default function LoginForm() {
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+
+export default function LoginPage() {
   const router = useRouter()
+  const supabase = createClient()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleLogin(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
-    setError(null)
-    const supabase = createClient()
+    setLoading(true); setError('')
     const { error } = await supabase.auth.signInWithPassword({ email, password })
-    setLoading(false)
-    if (error) setError('Email atau kata sandi salah.')
-    else router.push('/dashboard')
+    if (error) { setError('Email atau password salah.'); setLoading(false); return }
+    router.push('/dashboard'); router.refresh()
   }
 
+  const inputCls =
+    'w-full rounded-xl border-0 bg-slate-100/90 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500'
+
   return (
-    <div
-      className="min-h-screen flex items-center justify-center relative"
-      style={{
-        backgroundImage: "url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1600&q=80')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
-    >
-      <div className="absolute inset-0 bg-black/50" />
+    <div className="min-h-screen w-full relative flex items-center justify-center px-4 py-10">
+      <img
+        src="/kantor.jpg"
+        alt="Kantor Imigrasi Kelas II TPI Tanjung Balai Karimun"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
+      <div className="absolute inset-0 bg-black/55" />
 
       <div
-        className="relative z-10 w-full max-w-sm mx-4 rounded-2xl px-8 py-10"
-        style={{
-          background: 'rgba(15, 25, 50, 0.65)',
-          backdropFilter: 'blur(18px)',
-          WebkitBackdropFilter: 'blur(18px)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          boxShadow: '0 25px 60px rgba(0,0,0,0.5)',
-        }}
+        className="relative z-10 w-full max-w-md rounded-2xl overflow-hidden p-8"
+        style={{ background: 'rgba(15,25,55,0.75)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)' }}
       >
-        <div className="flex flex-col items-center mb-8">
-          <img
-            src="/logo-simponik-mark.png"
-            alt="SIMPONIK"
-            style={{ filter: 'brightness(0) invert(1)', height: '36px', width: 'auto', marginBottom: '16px' }}
-          />
-          <h1 className="text-white text-xl font-bold tracking-wide">Masuk ke SIMPONIK</h1>
-          <p className="text-white/45 text-xs mt-1">Sistem Monitoring & Pelaporan Kinerja</p>
+        <div className="text-center mb-6">
+          <img src="/logo-simponik-mark.png" alt="SIMPONIK" className="h-6 w-auto mx-auto mb-4" />
+          <h1 className="text-xl font-bold text-white">Masuk ke SIMPONIK</h1>
+          <p className="text-sm text-white/60 mt-1">Sistem Monitoring &amp; Pelaporan Kinerja</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              required
-              className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/40 outline-none transition"
-              style={{
-                background: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.15)',
-              }}
-              onFocus={e => e.currentTarget.style.border = '1px solid rgba(96,165,250,0.7)'}
-              onBlur={e => e.currentTarget.style.border = '1px solid rgba(255,255,255,0.15)'}
-            />
-          </div>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="email" value={email} onChange={(e) => setEmail(e.target.value)} required
+            placeholder="nama@imigrasi.go.id"
+            className={inputCls}
+          />
+          <input
+            type="password" value={password} onChange={(e) => setPassword(e.target.value)} required
+            placeholder="••••••••"
+            className={inputCls}
+          />
 
-          <div>
-            <input
-              type="password"
-              placeholder="Kata sandi"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-              className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/40 outline-none transition"
-              style={{
-                background: 'rgba(255,255,255,0.08)',
-                border: '1px solid rgba(255,255,255,0.15)',
-              }}
-              onFocus={e => e.currentTarget.style.border = '1px solid rgba(96,165,250,0.7)'}
-              onBlur={e => e.currentTarget.style.border = '1px solid rgba(255,255,255,0.15)'}
-            />
-          </div>
-
-          {error && (
-            <p className="text-red-400 text-xs text-center bg-red-500/10 rounded-lg px-3 py-2">
-              {error}
-            </p>
-          )}
+          {error && <p className="text-sm text-red-300 bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-2.5">{error}</p>}
 
           <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-xl py-3 text-sm font-bold text-white transition disabled:opacity-60 mt-2"
-            style={{
-              background: loading ? 'rgba(37,99,235,0.6)' : 'linear-gradient(90deg, #1d4ed8, #2563eb)',
-              boxShadow: '0 4px 20px rgba(37,99,235,0.4)',
-            }}
+            type="submit" disabled={loading}
+            className="w-full rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold py-3 text-sm transition"
           >
-            {loading ? 'Memuat…' : 'Masuk'}
+            {loading ? 'Memproses…' : 'Masuk'}
           </button>
         </form>
 
-        <p className="text-center text-white/30 text-xs mt-6">
-          &copy; {new Date().getFullYear()} SIMPONIK — KPP Pratama
+        <p className="text-center text-xs text-white/40 mt-6">
+          © {new Date().getFullYear()} SIMPONIK — Kantor Imigrasi Kelas II TPI Tanjung Balai Karimun
         </p>
       </div>
     </div>
